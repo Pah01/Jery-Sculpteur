@@ -1,109 +1,107 @@
-<section style="margin-top:18px">
-  <h2>Galerie d'œuvres</h2>
-  <div id="galleryGrid" class="gallery"></div>
-</section>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sculpture MG — Accueil</title>
+<style>
+:root{--bg:#fff8f2;--accent:#ef7e2f;--muted:#555;--card:#fff}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#222}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;background:#fff8f2;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
+header .brand{font-weight:700;color:var(--accent)}
+header nav button{margin-left:12px;cursor:pointer;border:none;padding:8px 16px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600}
+main{padding:28px}
+section{margin-top:28px}
+.btn-outline{background:transparent;border:2px solid var(--accent);color:var(--accent);cursor:pointer;padding:10px 18px;border-radius:999px}
+</style>
+</head>
+<body>
 
-<section style="margin-top:18px">
-  <h2>Biographie de l'artiste</h2>
-  <p id="bioText">Texte de biographie modifiable depuis l'admin.</p>
-</section>
+<header>
+  <div class="brand">Sculpture MG</div>
+  <nav>
+    <button onclick="showSection('home')">Accueil</button>
+    <button onclick="showSection('gallery')">Galerie</button>
+    <button onclick="showSection('about')">À propos</button>
+    <button onclick="showSection('contact')">Contact</button>
+    <button onclick="openAdmin()">Admin</button>
+  </nav>
+</header>
+
+<main>
+  <!-- Page Accueil -->
+  <section id="home">
+    <h1>Bienvenue sur Sculpture MG</h1>
+    <p id="bioText">Sculpture MG est un artiste malgache passionné par la sculpture sur bois et pierre.</p>
+    <div style="margin-top:16px">
+      <button class="btn-outline" onclick="alert('Commande démo')">Commander une Œuvre</button>
+      <button class="btn-outline" onclick="showSection('gallery')">Explorer la Galerie →</button>
+    </div>
+  </section>
+
+  <!-- Galerie (hidden par défaut) -->
+  <section id="gallery" style="display:none">
+    <h2>Galerie d'œuvres</h2>
+    <div id="galleryGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px"></div>
+  </section>
+
+  <!-- À propos (hidden) -->
+  <section id="about" style="display:none">
+    <h2>À propos de l'artiste</h2>
+    <p id="infoText">Bienvenue sur la galerie. Texte d'accueil modifiable dans l'interface admin.</p>
+  </section>
+
+  <!-- Contact (hidden) -->
+  <section id="contact" style="display:none">
+    <h2>Contactez-nous</h2>
+    <form id="contactForm" onsubmit="return false">
+      <input type="text" placeholder="Votre nom" required><br>
+      <input type="text" placeholder="Votre email" required><br>
+      <textarea placeholder="Message"></textarea><br>
+      <button onclick="alert('Formulaire envoyé (démo)')">Envoyer</button>
+    </form>
+  </section>
+</main>
+
+<footer style="padding:20px;text-align:center;color:var(--muted)">
+  © <span id="year"></span> Sculpture MG
+</footer>
 
 <script>
-const STORAGE_KEY = 'sculpture_mg_data_v2';
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// === Données ===
+const STORAGE_KEY = 'sculpture_mg_data_v4';
 let DATA = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-  infoText: "Bienvenue sur la galerie. Texte d'accueil modifiable dans l'interface admin.",
-  bioText: "Sculpture MG est un artiste malgache passionné par la sculpture sur bois et pierre.",
-  artworks: [
-    {id:1, title:"Sculpture Ancestrale", desc:"Bois sculpté, 45cm", price:"120 000 MGA", image:"https://images.unsplash.com/photo-1526318472351-c75fcf0700c4?auto=format&fit=crop&w=800&q=60"},
-    {id:2, title:"Tête de Roi", desc:"Pierre gravée", price:"200 000 MGA", image:"https://images.unsplash.com/photo-1526481280698-9f2f7c5d7b23?auto=format&fit=crop&w=800&q=60"}
+  infoText:"Bienvenue sur la galerie.",
+  bioText:"Sculpture MG est un artiste malgache passionné par la sculpture sur bois et pierre.",
+  artworks:[
+    {id:1,title:"Sculpture Ancestrale",desc:"Bois sculpté, 45cm",price:"120 000 MGA",image:"https://images.unsplash.com/photo-1526318472351-c75fcf0700c4?auto=format&fit=crop&w=800&q=60"},
+    {id:2,title:"Tête de Roi",desc:"Pierre gravée",price:"200 000 MGA",image:"https://images.unsplash.com/photo-1526481280698-9f2f7c5d7b23?auto=format&fit=crop&w=800&q=60"}
   ]
 };
+let ADMIN_PASSWORD = localStorage.getItem('adminPassword') || 'admin123';
 
-function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA)); renderAll(); }
-
-function renderAll(){
-  // Galerie
+// === Galerie ===
+function renderGallery(){
   const gallery = document.getElementById('galleryGrid');
-  gallery.innerHTML = '';
-  DATA.artworks.forEach(a => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${a.image}" alt="${a.title}">
-      <div class="card-body">
-        <div class="title">${a.title}</div>
-        <div class="desc">${a.desc}</div>
-        <div class="price">${a.price}</div>
-      </div>
-    `;
+  gallery.innerHTML='';
+  DATA.artworks.forEach(a=>{
+    const card=document.createElement('div');
+    card.innerHTML=<img src="${a.image}" alt="${a.title}" style="width:100%;height:170px;object-fit:cover;border-radius:8px"><b>${a.title}</b><br>${a.desc}<br><span style="color:var(--accent)">${a.price}</span>;
     gallery.appendChild(card);
   });
-
-  // Texte général et biographie
-  document.getElementById('infoText').innerText = DATA.infoText;
   document.getElementById('bioText').innerText = DATA.bioText;
+  document.getElementById('infoText').innerText = DATA.infoText;
+}
+renderGallery();
+
+// === Menu navigation ===
+function showSection(id){
+  ['home','gallery','about','contact'].forEach(sec=>document.getElementById(sec).style.display=(sec===id?'block':'none'));
 }
 
-// --- ADMIN PANEL ---
-function openAdmin() {
-  const pw = prompt("Mot de passe admin :");
-  if(pw !== (localStorage.getItem('adminPassword') || 'admin123')){
-    alert("Mot de passe incorrect");
-    return;
-  }
-  const panel = document.createElement('div');
-  panel.className='admin-area';
-  panel.innerHTML = `
-    <h3>Admin Panel</h3>
-    <label>Texte d'accueil :</label><textarea id="adminInfoText">${DATA.infoText}</textarea>
-    <label>Biographie :</label><textarea id="adminBioText">${DATA.bioText}</textarea>
-    <h4>Ajouter une œuvre</h4>
-    <input id="a_title" placeholder="Titre"><br>
-    <input id="a_desc" placeholder="Description"><br>
-    <input id="a_price" placeholder="Prix"><br>
-    <input id="a_image" placeholder="URL image"><br>
-    <button id="addArtworkBtn">Ajouter</button>
-    <h4>Œuvres existantes</h4>
-    <div id="adminList"></div>
-    <button onclick="panel.remove()">Fermer Admin</button>
-  `;
-  document.body.appendChild(panel);
-  refreshAdminList();
-
-  document.getElementById('adminInfoText').addEventListener('blur', e => { DATA.infoText=e.target.value; saveData(); });
-  document.getElementById('adminBioText').addEventListener('blur', e => { DATA.bioText=e.target.value; saveData(); });
-  document.getElementById('addArtworkBtn').onclick = () => {
-    const t = document.getElementById('a_title').value;
-    const d = document.getElementById('a_desc').value;
-    const p = document.getElementById('a_price').value;
-    const i = document.getElementById('a_image').value;
-    if(!t || !i){ alert("Titre et image requis"); return; }
-    DATA.artworks.push({id:Date.now(), title:t, desc:d, price:p, image:i});
-    saveData();
-    document.getElementById('a_title').value=''; document.getElementById('a_desc').value=''; document.getElementById('a_price').value=''; document.getElementById('a_image').value='';
-    refreshAdminList();
-  };
-}
-
-function refreshAdminList(){
-  const list = document.getElementById('adminList');
-  list.innerHTML='';
-  DATA.artworks.forEach((a, i) => {
-    const div = document.createElement('div');
-    div.innerHTML = <b>${a.title}</b> <button onclick="deleteArtwork(${i})">Supprimer</button>;
-    list.appendChild(div);
-  });
-}
-
-function deleteArtwork(i){
-  if(confirm("Supprimer cette œuvre ?")){
-    DATA.artworks.splice(i,1);
-    saveData();
-    refreshAdminList();
-  }
-}
-
-window.onload = renderAll;
-</script>
-
-<button onclick="openAdmin()" class="btn btn-outline" style="position:fixed;bottom:20px;right:20px;">Admin</button>
+// === Admin panel ===
+function openAdmin(){
+  const pw=prompt("Mot de passe admin :");
+  if(pw!==ADMIN_PASSWORD){alert("Mot de passe incorrect");return_

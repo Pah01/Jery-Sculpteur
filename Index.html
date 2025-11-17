@@ -6,7 +6,7 @@
 <title>Nature Artisanale — Galerie</title>
 <style>
 :root {
-  --bg:#ffffff; --accent:#8B5E3C; --muted:#555; --card:#f9f9f9; --glass: rgba(255,255,255,0.7);
+  --bg:#ffffff; --accent:#8B5E3C; --muted:#555; --card:#f9f9f9;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#222;}
@@ -18,8 +18,9 @@ main{padding:20px;}
 h1,h2,h3,h4{color:var(--accent);}
 button{cursor:pointer;}
 .hero{display:flex;flex-direction:column;gap:15px;text-align:center;margin-bottom:30px;align-items:center;}
-.hero-img{max-width:300px;border-radius:12px;object-fit:cover;}
-.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.hero img{max-width:350px;border-radius:12px;object-fit:cover;}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px;}
+.actions button{padding:10px 18px;border-radius:8px;border:none;background:var(--accent);color:#fff;}
 .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px;}
 .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);transition: transform 0.3s, box-shadow 0.3s;}
 .card:hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(0,0,0,0.15);}
@@ -35,7 +36,6 @@ input, textarea, select{width:100%;padding:8px;margin-bottom:10px;border-radius:
 #adminPanel{background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.95));padding:15px;border-radius:10px;margin-top:20px;display:none;}
 footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color:var(--muted);}
 @media(min-width:768px){.hero{flex-direction:row;justify-content:space-between;text-align:left;}}
-.smallBtn{padding:5px 10px;border-radius:6px;margin:3px;background:var(--accent);color:#fff;border:none;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -55,11 +55,11 @@ footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color
   <!-- Accueil -->
   <section id="sectionAccueil" class="hero">
     <div>
-      <h1>Biographie du sculpteur malgache</h1>
+      <h1>Jery RAZAFINDRANAIVO - Sculpteur Malgache</h1>
       <p id="bioText">
-        Depuis les temps anciens, Madagascar est riche d’une tradition de sculpture sur bois et pierre.  
-        Jery RAZAFINDRANAIVO perpétue cet art en créant des œuvres uniques aux tons naturels beige et vert.  
-        Ses créations s’inspirent des poteaux funéraires « aloalo » et de l’héritage des Zafimaniry, reflétant l’âme de la nature et la culture malgache.
+        Depuis des siècles, Madagascar est connue pour son art de la sculpture sur bois et pierre.  
+        Jery puise son inspiration dans la tradition des Zafimaniry et des Mahafaly, perpétuant un héritage unique.  
+        Chaque œuvre raconte l’histoire de la nature, de la culture et de l’âme malgache.
       </p>
       <div class="actions">
         <button id="btnCommander">Commander une œuvre</button>
@@ -67,7 +67,7 @@ footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color
       </div>
     </div>
     <div>
-      <img src="https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=600&q=60" alt="Sculpteur malgache" class="hero-img">
+      <img src="https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=600&q=60" alt="Sculpteur malgache">
     </div>
   </section>
 
@@ -104,7 +104,7 @@ footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color
   <section id="sectionApropos" style="display:none;">
     <h2>À propos du sculpteur</h2>
     <p id="aproposText">
-      Jery RAZAFINDRANAIVO transforme le bois et la pierre en sculptures uniques aux couleurs beige et vert naturel.  
+      Jery transforme le bois et la pierre en sculptures uniques aux couleurs beige et vert naturel.  
       Son travail célèbre la nature, la culture malgache et la créativité artisanale.
     </p>
   </section>
@@ -133,6 +133,12 @@ footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color
     <h4>Modifier À propos</h4>
     <textarea id="adminApropos"></textarea>
     <button onclick="saveApropos()">Enregistrer À propos</button>
+
+    <h4>Modifier Contacts</h4>
+    <input type="text" id="adminEmail" placeholder="Email">
+    <input type="text" id="adminTel" placeholder="Téléphone">
+    <input type="text" id="adminFacebook" placeholder="Facebook">
+    <button onclick="saveContact()">Enregistrer Contact</button>
 
     <h4>Galerie</h4>
     <div id="adminGallery"></div>
@@ -167,8 +173,16 @@ footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color
 // ==== Variables ====
 let isAdmin=false;
 const galleryData=[
-  {title:'Sculpture Bois 1',desc:'Bois sculpté beige, 45cm',price:'120 000 MGA',image:'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Pierre 1',desc:'Pierre gravée vert naturel',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=800&q=60'}
+  {title:'Sculpture Bois 1',desc:'Bois sculpté beige',price:'120 000 MGA',image:'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Pierre 1',desc:'Pierre gravée vert naturel',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Mixte 1',desc:'Bois et pierre beige & vert naturel',price:'150 000 MGA',image:'https://images.unsplash.com/photo-1606813908712-7aa1b2aa73b5?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Bois 2',desc:'Bois sculpté beige',price:'130 000 MGA',image:'https://images.unsplash.com/photo-1612832021621-ec4f8bb9c7a5?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Pierre 2',desc:'Pierre gravée vert naturel',price:'210 000 MGA',image:'https://images.unsplash.com/photo-1612832176322-6f1f789a4eb6?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Mixte 2',desc:'Bois et pierre beige & vert naturel',price:'160 000 MGA',image:'https://images.unsplash.com/photo-1612832198732-3b2a3eeb2b1f?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Bois 3',desc:'Bois sculpté beige',price:'140 000 MGA',image:'https://images.unsplash.com/photo-1612832221015-5b7fc2b6c91c?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Pierre 3',desc:'Pierre gravée vert naturel',price:'220 000 MGA',image:'https://images.unsplash.com/photo-1612832242017-9f1d2e5c3a8f?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Mixte 3',desc:'Bois et pierre beige & vert naturel',price:'170 000 MGA',image:'https://images.unsplash.com/photo-1612832253019-0c3a3d7b5d2f?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture Bois 4',desc:'Bois sculpté beige',price:'150 000 MGA',image:'https://images.unsplash.com/photo-1612832264021-7d1f3f4d3e7f?auto=format&fit=crop&w=800&q=60'}
 ];
 
 // ==== Initial Render ====
@@ -178,7 +192,7 @@ function renderGallery(){
   galleryEl.innerHTML='';
   galleryData.forEach(a=>{
     const div=document.createElement('div'); div.className='card';
-    div.innerHTML=`<img src="${a.image}" alt="${a.title}" loading="lazy">
+    div.innerHTML = `<img src="${a.image}" alt="${a.title}" loading="lazy" style="width:100%;height:180px;object-fit:cover;">
       <div class="card-body">
         <div class="title">${a.title}</div>
         <div class="desc">${a.desc}</div>
@@ -187,7 +201,7 @@ function renderGallery(){
     galleryEl.appendChild(div);
   });
 }
-renderGallery();
+window.addEventListener('DOMContentLoaded', renderGallery);
 
 // ==== Navigation ====
 function hideAllSections(){document.querySelectorAll('main section').forEach(s=>s.style.display='none');}
@@ -216,6 +230,9 @@ function login(){
       document.getElementById('adminBio').value=document.getElementById('bioText').innerText;
       document.getElementById('adminPrehistoire').value=document.getElementById('bioText').innerText;
       document.getElementById('adminApropos').value=document.getElementById('aproposText').innerText;
+      document.getElementById('adminEmail').value = document.querySelector('#sectionContact p:nth-child(1)').innerText.replace('Email: ','');
+      document.getElementById('adminTel').value = document.querySelector('#sectionContact p:nth-child(2)').innerText.replace('Téléphone: ','');
+      document.getElementById('adminFacebook').value = document.querySelector('#sectionContact p:nth-child(3) a').innerText;
     } else {alert('Mot de passe incorrect');}
   } else {
     const email=document.getElementById('loginEmail').value;
@@ -228,8 +245,17 @@ function login(){
 function saveBio(){if(!isAdmin){alert('Seul l’admin peut modifier');return;}document.getElementById('bioText').innerText=document.getElementById('adminBio').value;alert('Biographie sauvegardée !');}
 function savePrehistoire(){if(!isAdmin){alert('Seul l’admin peut modifier');return;}document.getElementById('bioText').innerText=document.getElementById('adminPrehistoire').value;alert('Accueil sauvegardé !');}
 function saveApropos(){if(!isAdmin){alert('Seul l’admin peut modifier');return;}document.getElementById('aproposText').innerText=document.getElementById('adminApropos').value;alert("Section À propos mise à jour !");}
+function saveContact(){
+  if(!isAdmin){alert('Seul l’admin peut modifier'); return;}
+  const email = document.getElementById('adminEmail').value;
+  const tel = document.getElementById('adminTel').value;
+  const fb = document.getElementById('adminFacebook').value;
+  if(email) document.querySelector('#sectionContact p:nth-child(1)').innerText = "Email: " + email;
+  if(tel) document.querySelector('#sectionContact p:nth-child(2)').innerText = "Téléphone: " + tel;
+  if(fb) document.querySelector('#sectionContact p:nth-child(3) a').innerText = fb;
+  alert('Contacts mis à jour !');
+}
 function logoutAdmin(){isAdmin=false;document.getElementById('adminPanel').style.display='none';alert('Déconnecté');}
-
 function uploadArtwork(){
   if(!isAdmin){alert('Seul l’admin peut ajouter des œuvres');return;}
   const file=document.getElementById('adminFile').files[0];

@@ -1,377 +1,247 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>L'Art de la Sculpture Malgache</title>
-  <style>
-    :root{
-      --bg:#faf8f5; --accent:#8B5E3C; --muted:#5a5a5a; --card:#fff;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:#222;line-height:1.5}
-    header{
-      position:sticky; top:0; left:0; right:0; z-index:1000;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 18px; background:rgba(255,255,255,0.96); border-bottom:1px solid rgba(0,0,0,0.06);
-    }
-    .brand{font-weight:800;color:var(--accent); font-size:1.15rem}
-    nav{display:flex; gap:8px; align-items:center}
-    nav button{
-      background:var(--accent); color:#fff; border:0; padding:8px 12px; border-radius:999px; cursor:pointer;
-      font-weight:600; transition: transform .12s ease, opacity .12s;
-    }
-    nav button.outline{background:transparent;color:var(--accent);border:2px solid var(--accent)}
-    nav button:hover{opacity:.9; transform:translateY(-1px)}
-    main{max-width:1100px;margin:20px auto;padding:0 16px}
-    section{display:none}
-    /* HERO */
-    .hero{
-      background-image:linear-gradient(rgba(12,8,6,0.48),rgba(12,8,6,0.24)), url('https://images.unsplash.com/photo-1501270067466-829b09eaf2dd?auto=format&fit=crop&w=1600&q=80');
-      background-size:cover;background-position:center;border-radius:12px;color:#fff;padding:36px 22px;
-      display:flex; gap:20px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-    }
-    .hero .text{max-width:720px}
-    .hero h1{margin:0 0 8px;font-size:1.6rem; color:#fff}
-    .hero p{margin:0;color:rgba(255,255,255,0.95)}
-    .hero .actions{margin-top:14px;display:flex;gap:10px}
-    .hero .actions button{background:#fff;color:var(--accent); padding:10px 14px;border-radius:8px;border:0;font-weight:700}
-    .hero .image{width:280px;border-radius:10px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.28)}
-    .hero .image img{display:block;width:100%;height:100%;object-fit:cover}
-    /* Gallery */
-    .section-title{color:var(--accent);margin:6px 0 12px}
-    .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-    .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 6px 22px rgba(12,12,12,0.06);transition:transform .18s, box-shadow .18s}
-    .card:hover{transform:translateY(-6px);box-shadow:0 14px 38px rgba(12,12,12,0.12)}
-    .card img{width:100%;height:180px;object-fit:cover;display:block}
-    .card-body{padding:10px}
-    .card-body .title{font-weight:700;color:#222;margin-bottom:6px}
-    .card-body .desc{color:var(--muted);font-size:14px;margin-bottom:8px}
-    .card-body .price{color:var(--accent);font-weight:800}
-    /* Services */
-    .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
-    .service-card{background:var(--card);padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
-    /* Admin */
-    #adminPanel{background:linear-gradient(180deg,#fff,#fbfbfb);padding:14px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.05)}
-    .form-row{display:flex;gap:10px}
-    .form-row > *{flex:1}
-    input, textarea, select{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px}
-    button.primary{background:var(--accent);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
-    button.ghost{background:transparent;border:1px solid #ddd;color:#222;padding:8px 10px;border-radius:8px;cursor:pointer}
-    footer{margin-top:30px;padding:18px 0;text-align:center;color:var(--muted)}
-    /* Responsive */
-    @media(max-width:780px){
-      .hero{padding:18px}
-      .hero .image{width:100%;max-height:260px}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Art de la Sculpture Malgache</title>
+<style>
+body { margin:0; font-family: Arial, sans-serif; background:#f7f3ef; }
+header { background:#2f2b28; color:white; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
+nav { display:flex; justify-content:center; gap:10px; background:#403c38; padding:10px; }
+nav button { padding:10px 15px; background:#d9a066; border:none; color:white; cursor:pointer; border-radius:5px; font-weight:bold; }
+nav button:hover { background:#bb873f; }
+section { display:none; padding:20px; }
+section.visible { display:block; }
+.hero { text-align:center; background:white; padding:20px; border-radius:10px; }
+.hero img { width:100%; max-height:300px; object-fit:cover; border-radius:10px; }
+.gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; }
+.gallery img { width:100%; height:150px; object-fit:cover; border-radius:8px; }
+.admin-panel { background:white; padding:20px; border-radius:10px; }
+.admin-panel textarea, .admin-panel input { width:100%; padding:10px; margin-bottom:10px; }
+</style>
 </head>
 <body>
-  <header>
-    <div class="brand">L'Art de la Sculpture Malgache</div>
-    <nav>
-      <button onclick="openSection('accueil')">Accueil</button>
-      <button onclick="openSection('services')">Services</button>
-      <button onclick="openSection('galerie')">Galerie</button>
-      <button onclick="openSection('apropos')">À propos</button>
-      <button onclick="openSection('contact')">Contact</button>
-      <button onclick="openSection('admin')">Admin</button>
-    </nav>
-  </header>
+<header>L'Art de la Sculpture Malgache</header>
+<nav>
+<button onclick="openSection('accueil')">Accueil</button>
+<button onclick="openSection('apropos')">À propos</button>
+<button onclick="openSection('services')">Services</button>
+<button onclick="openSection('galerie')">Galerie</button>
+<button onclick="openSection('contact')">Contact</button>
+<button onclick="openSection('admin')">Admin</button>
+</nav>
 
-  <main>
-    <!-- ACCUEIL -->
-    <section id="accueil" class="hero" aria-label="Accueil">
-      <div class="text">
-        <h1>Histoire & héritage de la sculpture malgache</h1>
-        <p id="accueilText">La sculpture malgache puise ses formes et ses motifs dans les traditions ancestrales — poteaux funéraires, symboles de protection et récits communautaires. Jery RAZAFINDRANAIVO perpétue ce savoir-faire en alliant respect du matériau et esthétique contemporaine.</p>
-        <div class="actions">
-          <button onclick="openSection('galerie')">Voir la galerie</button>
-          <button onclick="openSection('admin')">Gérer (Admin)</button>
-        </div>
-      </div>
-      <div class="image">
-        <img id="accueilImage" src="https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=900&q=60" alt="Sculpteur malgache">
-      </div>
-    </section>
+<!-- ACCUEIL visible par défaut -->
+<section id="accueil" class="hero visible" style="display:block;">
+<h2>Bienvenue dans l'univers de la sculpture malgache</h2>
+<img src="https://images.unsplash.com/photo-1592853625600-234533e634e6?auto=format&fit=crop&w=1600&q=80">
+<p id="textAccueil">Depuis des siècles, l'art de la sculpture malgache transmet l'histoire, la culture et l'âme du peuple à travers le bois et la pierre.</p>
+</section>
 
-    <!-- SERVICES -->
-    <section id="services">
-      <h2 class="section-title">Nos services</h2>
-      <div id="servicesGrid" class="services-grid">
-        <div class="service-card">Commandes personnalisées</div>
-        <div class="service-card">Restauration d'œuvres</div>
-        <div class="service-card">Expositions</div>
-        <div class="service-card">Ateliers & Formations</div>
-      </div>
-    </section>
+<!-- A PROPOS -->
+<section id="apropos">
+<h2>À propos</h2>
+<p id="textApropos">Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.</p>
+</section>
 
-    <!-- GALERIE -->
-    <section id="galerie">
-      <h2 class="section-title">Galerie d'œuvres</h2>
-      <div id="gallery" class="gallery" aria-live="polite"></div>
-    </section>
+<!-- SERVICES -->
+<section id="services">
+<h2>Services</h2>
+<ul id="listServices">
+<li>Commandes personnalisées</li>
+<li>Restauration d'œuvres</li>
+<li>Expositions</li>
+<li>Ateliers & Formations</li>
+</ul>
+</section>
 
-    <!-- A PROPOS -->
-    <section id="apropos">
-      <h2 class="section-title">À propos</h2>
-      <p id="aproposText">Sculpteur malgache passionné, spécialisé dans des pièces en bois, pierre et matériaux naturels. Chaque pièce est travaillée à la main et raconte une histoire.</p>
-    </section>
+<!-- GALERIE -->
+<section id="galerie">
+<h2>Galerie</h2>
+<div class="gallery" id="galleryContainer"></div>
+</section>
 
-    <!-- CONTACT -->
-    <section id="contact">
-      <h2 class="section-title">Contact</h2>
-      <p>Email: <span id="contactEmail">contact@artmalagasy.mg</span></p>
-      <p>Téléphone: <span id="contactTel">+261 34 00 000 00</span></p>
-      <p>Facebook: <a id="contactFB" href="https://facebook.com">facebook.com/artmalagasy</a></p>
-    </section>
+<!-- CONTACT -->
+<section id="contact">
+<h2>Contact</h2>
+<p>Email : <span id="contactEmail">sculpture@example.com</span></p>
+<p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
+</section>
 
-    <!-- ADMIN -->
-    <section id="admin">
-      <h2 class="section-title">Panneau Admin (provisoire)</h2>
-      <div id="adminPanel">
-        <!-- Accueil -->
-        <h3>Modifier Accueil</h3>
-        <textarea id="adm_accueilText" rows="4" placeholder="Texte de l'accueil"></textarea>
-        <input id="adm_accueilImage" placeholder="URL de l'image d'accueil" />
-        <div style="display:flex;gap:10px">
-          <button class="primary" onclick="saveAccueil()">Sauvegarder Accueil</button>
-          <button class="ghost" onclick="resetAccueil()">Reset par défaut</button>
-        </div>
+<!-- ADMIN -->
+<section id="admin" class="admin-panel">
+<h2>Panel Admin</h2>
+<label>Texte Accueil :</label>
+<textarea id="editAccueil"></textarea>
+<label>Texte À propos :</label>
+<textarea id="editApropos"></textarea>
+<label>Services :</label>
+<textarea id="editServices"></textarea>
+<label>Email Contact :</label>
+<input id="editEmail">
+<label>Téléphone :</label>
+<input id="editTel">
+<button onclick="saveAdmin()">Enregistrer</button>
+</section>
 
-        <!-- Services -->
-        <h3 style="margin-top:12px">Modifier Services (une ligne = un service)</h3>
-        <textarea id="adm_services" rows="4" placeholder="Commandes personnalisées\nRestauration\nExpositions"></textarea>
-        <button class="primary" onclick="saveServices()">Sauvegarder Services</button>
+<script>
+function openSection(id) {
+ document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
+ document.getElementById(id).classList.add('visible');
+}
 
-        <!-- À propos -->
-        <h3 style="margin-top:12px">Modifier À propos</h3>
-        <textarea id="adm_apropos" rows="3" placeholder="Texte à propos..."></textarea>
-        <button class="primary" onclick="saveApropos()">Sauvegarder À propos</button>
+// 10 IMAGES MALAGASY RÉALISTES
+const images = [
+"https://i.imgur.com/pyK8b0X.jpeg",
+"https://i.imgur.com/4SZW6Cf.jpeg",
+"https://i.imgur.com/T1VJc1o.jpeg",
+"https://i.imgur.com/1eBfMpc.jpeg",
+"https://i.imgur.com/rm7d2Bo.jpeg",
+"https://i.imgur.com/4iP2vBn.jpeg",
+"https://i.imgur.com/fPVBVFt.jpeg",
+"https://i.imgur.com/Zx7f1MM.jpeg",
+"https://i.imgur.com/6HkE1fN.jpeg",
+"https://i.imgur.com/aXjdbxl.jpeg"
+];
 
-        <!-- Contact -->
-        <h3 style="margin-top:12px">Modifier Contact</h3>
-        <div class="form-row">
-          <input id="adm_email" placeholder="Email" />
-          <input id="adm_tel" placeholder="Téléphone" />
-        </div>
-        <input id="adm_facebook" placeholder="URL Facebook" />
-        <button class="primary" onclick="saveContact()">Sauvegarder Contact</button>
+function renderGallery() {
+ let container = document.getElementById('galleryContainer');
+ container.innerHTML = images.map(src => `<img src="${src}">`).join('');
+}
+renderGallery();
 
-        <!-- Galerie: ajout -->
-        <h3 style="margin-top:12px">Ajouter une sculpture (URL d'image)</h3>
-        <input id="adm_sculptTitre" placeholder="Titre (ex: Sculpture Bois 1)" />
-        <input id="adm_sculptImg" placeholder="URL image (https://...)" />
-        <input id="adm_sculptDesc" placeholder="Brève description" />
-        <input id="adm_sculptPrice" placeholder="Prix (ex: 120 000 MGA)" />
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="primary" onclick="addSculptureFromAdmin()">Ajouter à la galerie</button>
-          <button class="ghost" onclick="repopulateDemoGallery()">Remplir démo (10 images)</button>
-        </div>
-      </div>
-    </section>
-  </main>
+function saveAdmin() {
+ document.getElementById('textAccueil').innerText = document.getElementById('editAccueil').value;
+ document.getElementById('textApropos').innerText = document.getElementById('editApropos').value;
+ document.getElementById('listServices').innerHTML = document.getElementById('editServices').value
+ .split("\n").map(s => `<li>${s}</li>`).join('');
+ document.getElementById('contactEmail').innerText = document.getElementById('editEmail').value;
+ document.getElementById('contactTel').innerText = document.getElementById('editTel').value;
+ alert("Modifications enregistrées !");
+}
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Art de la Sculpture Malgache</title>
+<style>
+body { margin:0; font-family: Arial, sans-serif; background:#f7f3ef; }
+header { background:#2f2b28; color:white; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
+nav { display:flex; justify-content:center; gap:10px; background:#403c38; padding:10px; }
+nav button { padding:10px 15px; background:#d9a066; border:none; color:white; cursor:pointer; border-radius:5px; font-weight:bold; }
+nav button:hover { background:#bb873f; }
+section { display:none; padding:20px; }
+section.visible { display:block; }
+.hero { text-align:center; background:white; padding:20px; border-radius:10px; }
+.hero img { width:100%; max-height:300px; object-fit:cover; border-radius:10px; }
+.gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; }
+.gallery img { width:100%; height:150px; object-fit:cover; border-radius:8px; }
+.admin-panel { background:white; padding:20px; border-radius:10px; }
+.admin-panel textarea, .admin-panel input { width:100%; padding:10px; margin-bottom:10px; }
+</style>
+</head>
+<body>
+<header>L'Art de la Sculpture Malgache</header>
+<nav>
+<button onclick="openSection('accueil')">Accueil</button>
+<button onclick="openSection('apropos')">À propos</button>
+<button onclick="openSection('services')">Services</button>
+<button onclick="openSection('galerie')">Galerie</button>
+<button onclick="openSection('contact')">Contact</button>
+<button onclick="openSection('admin')">Admin</button>
+</nav>
 
-  <footer>
-    © <span id="year"></span> L'Art de la Sculpture Malgache — Madagascar
-  </footer>
+<!-- ACCUEIL visible par défaut -->
+<section id="accueil" class="hero visible" style="display:block;">
+<h2>Bienvenue dans l'univers de la sculpture malgache</h2>
+<img src="https://images.unsplash.com/photo-1592853625600-234533e634e6?auto=format&fit=crop&w=1600&q=80">
+<p id="textAccueil">Depuis des siècles, l'art de la sculpture malgache transmet l'histoire, la culture et l'âme du peuple à travers le bois et la pierre.</p>
+</section>
 
-  <script>
-    // utils
-    function escapeHtml(str){
-      if(!str) return '';
-      return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[m]; });
-    }
+<!-- A PROPOS -->
+<section id="apropos">
+<h2>À propos</h2>
+<p id="textApropos">Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.</p>
+</section>
 
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
+<!-- SERVICES -->
+<section id="services">
+<h2>Services</h2>
+<ul id="listServices">
+<li>Commandes personnalisées</li>
+<li>Restauration d'œuvres</li>
+<li>Expositions</li>
+<li>Ateliers & Formations</li>
+</ul>
+</section>
 
-    // Demo gallery (realistic sculptures from Unsplash)
-    let galleryData = [
-      { title: 'Sculpture Bois 1', desc: 'Bois sculpté beige', price: '120 000 MGA', image: 'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Pierre 1', desc: 'Pierre gravée vert naturel', price: '200 000 MGA', image: 'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Mixte 1', desc: 'Bois et pierre', price: '150 000 MGA', image: 'https://images.unsplash.com/photo-1606813908712-7aa1b2aa73b5?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Bois 2', desc: 'Bois sculpté', price: '130 000 MGA', image: 'https://images.unsplash.com/photo-1612832021621-ec4f8bb9c7a5?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Pierre 2', desc: 'Pierre gravée', price: '210 000 MGA', image: 'https://images.unsplash.com/photo-1612832176322-6f1f789a4eb6?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Mixte 2', desc: 'Bois & pierre', price: '160 000 MGA', image: 'https://images.unsplash.com/photo-1612832198732-3b2a3eeb2b1f?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Bois 3', desc: 'Bois finement gravé', price: '140 000 MGA', image: 'https://images.unsplash.com/photo-1612832221015-5b7fc2b6c91c?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Pierre 3', desc: 'Pierre taillée', price: '220 000 MGA', image: 'https://images.unsplash.com/photo-1612832242017-9f1d2e5c3a8f?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Mixte 3', desc: 'Design contemporain', price: '170 000 MGA', image: 'https://images.unsplash.com/photo-1612832253019-0c3a3d7b5d2f?auto=format&fit=crop&w=900&q=60' },
-      { title: 'Sculpture Bois 4', desc: 'Bois poli beige', price: '150 000 MGA', image: 'https://images.unsplash.com/photo-1612832264021-7d1f3f4d3e7f?auto=format&fit=crop&w=900&q=60' }
-    ];
+<!-- GALERIE -->
+<section id="galerie">
+<h2>Galerie</h2>
+<div class="gallery" id="galleryContainer"></div>
+</section>
 
-    // Render gallery
-    function renderGallery(){
-      const el = document.getElementById('gallery');
-      el.innerHTML = '';
-      if(!galleryData || galleryData.length === 0){
-        el.innerHTML = '<p>Aucune œuvre dans la galerie pour le moment.</p>';
-        return;
-      }
-      galleryData.forEach(item=>{
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" />
-          <div class="card-body">
-            <div class="title">${escapeHtml(item.title)}</div>
-            <div class="desc">${escapeHtml(item.desc || '')}</div>
-            <div class="price">${escapeHtml(item.price || '')}</div>
-          </div>`;
-        el.appendChild(card);
-      });
-    }
+<!-- CONTACT -->
+<section id="contact">
+<h2>Contact</h2>
+<p>Email : <span id="contactEmail">sculpture@example.com</span></p>
+<p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
+</section>
 
-    // Fallback for broken images
-    document.addEventListener('error', function(e){
-      const t = e.target;
-      if(t.tagName === 'IMG' && !t.dataset.fallback){
-        t.dataset.fallback = '1';
-        t.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#aaa" font-size="18">Image indisponible</text></svg>';
-      }
-    }, true);
+<!-- ADMIN -->
+<section id="admin" class="admin-panel">
+<h2>Panel Admin</h2>
+<label>Texte Accueil :</label>
+<textarea id="editAccueil"></textarea>
+<label>Texte À propos :</label>
+<textarea id="editApropos"></textarea>
+<label>Services :</label>
+<textarea id="editServices"></textarea>
+<label>Email Contact :</label>
+<input id="editEmail">
+<label>Téléphone :</label>
+<input id="editTel">
+<button onclick="saveAdmin()">Enregistrer</button>
+</section>
 
-    // Init on load
-    window.addEventListener('DOMContentLoaded', function(){
-      renderGallery();
-      // show accueil by default
-      openSection('accueil');
-      prefillAdminFields();
-    });
+<script>
+function openSection(id) {
+ document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
+ document.getElementById(id).classList.add('visible');
+}
 
-    // Navigation using display (avoids class toggle issues)
-    function openSection(id){
-      const ids = ['accueil','services','galerie','apropos','contact','admin'];
-      ids.forEach(i=>{
-        const el = document.getElementById(i);
-        if(!el) return;
-        el.style.display = (i === id) ? 'block' : 'none';
-      });
-      window.scrollTo({top:0,behavior:'smooth'});
-      if(id === 'admin') prefillAdminFields();
-    }
+// 10 IMAGES MALAGASY RÉALISTES
+const images = [
+"https://i.imgur.com/pyK8b0X.jpeg",
+"https://i.imgur.com/4SZW6Cf.jpeg",
+"https://i.imgur.com/T1VJc1o.jpeg",
+"https://i.imgur.com/1eBfMpc.jpeg",
+"https://i.imgur.com/rm7d2Bo.jpeg",
+"https://i.imgur.com/4iP2vBn.jpeg",
+"https://i.imgur.com/fPVBVFt.jpeg",
+"https://i.imgur.com/Zx7f1MM.jpeg",
+"https://i.imgur.com/6HkE1fN.jpeg",
+"https://i.imgur.com/aXjdbxl.jpeg"
+];
 
-    // Admin helpers (prefill)
-    function prefillAdminFields(){
-      document.getElementById('adm_accueilText').value = document.getElementById('accueilText').innerText.trim();
-      document.getElementById('adm_accueilImage').value = document.getElementById('accueilImage').src || '';
-      const srvEls = Array.from(document.querySelectorAll('#servicesGrid .service-card')).map(n => n.innerText.trim());
-      document.getElementById('adm_services').value = srvEls.join('\\n');
-      document.getElementById('adm_apropos').value = document.getElementById('aproposText').innerText.trim();
-      document.getElementById('adm_email').value = document.getElementById('contactEmail').innerText.trim();
-      document.getElementById('adm_tel').value = document.getElementById('contactTel').innerText.trim();
-      document.getElementById('adm_facebook').value = document.getElementById('contactFB').href || '';
-    }
+function renderGallery() {
+ let container = document.getElementById('galleryContainer');
+ container.innerHTML = images.map(src => `<img src="${src}">`).join('');
+}
+renderGallery();
 
-    function saveAccueil(){
-      const txt = document.getElementById('adm_accueilText').value.trim();
-      const img = document.getElementById('adm_accueilImage').value.trim();
-      if(!txt){ alert('Le texte d\\'accueil ne peut pas être vide'); return; }
-      document.getElementById('accueilText').innerText = txt;
-      if(img) document.getElementById('accueilImage').src = img;
-      alert('Accueil mis à jour');
-    }
-
-    function resetAccueil(){
-      document.getElementById('adm_accueilText').value = 'La sculpture malgache puise ses formes et ses motifs dans les traditions ancestrales — poteaux funéraires, symboles et récits communautaires.';
-      document.getElementById('adm_accueilImage').value = 'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=900&q=60';
-      saveAccueil();
-    }
-
-    function saveServices(){
-      const raw = document.getElementById('adm_services').value.trim();
-      const lines = raw.split('\\n').map(s => s.trim()).filter(Boolean);
-      const grid = document.getElementById('servicesGrid');
-      grid.innerHTML = '';
-      if(lines.length === 0){
-        grid.innerHTML = '<div class="service-card">Aucun service défini</div>';
-      } else {
-        lines.forEach(l=>{
-          const d = document.createElement('div'); d.className='service-card'; d.innerText = l;
-          grid.appendChild(d);
-        });
-      }
-      alert('Services mis à jour');
-    }
-
-    function saveApropos(){
-      const txt = document.getElementById('adm_apropos').value.trim();
-      if(!txt){ alert('Le texte \"À propos\" ne peut pas être vide'); return; }
-      document.getElementById('aproposText').innerText = txt;
-      alert('À propos mis à jour');
-    }
-
-    function saveContact(){
-      const email = document.getElementById('adm_email').value.trim();
-      const tel = document.getElementById('adm_tel').value.trim();
-      const fb = document.getElementById('adm_facebook').value.trim();
-      if(email) document.getElementById('contactEmail').innerText = email;
-      if(tel) document.getElementById('contactTel').innerText = tel;
-      if(fb){
-        const a = document.getElementById('contactFB');
-        a.href = fb;
-        a.innerText = fb.replace(/^https?:\\/\\//,'').replace(/www\\./,'');
-      }
-      alert('Contact mis à jour');
-    }
-
-    function addSculptureFromAdmin(){
-      const title = (document.getElementById('adm_sculptTitre').value || 'Sculpture').trim();
-      const img = (document.getElementById('adm_sculptImg').value || '').trim();
-      const desc = (document.getElementById('adm_sculptDesc').value || '').trim();
-      const price = (document.getElementById('adm_sculptPrice').value || '').trim();
-      if(!img){
-        alert('Veuillez renseigner une URL d\\'image valide pour la sculpture.');
-        return;
-      }
-      galleryData.unshift({ title, desc, price, image: img });
-      renderGallery();
-      document.getElementById('adm_sculptTitre').value = '';
-      document.getElementById('adm_sculptImg').value = '';
-      document.getElementById('adm_sculptDesc').value = '';
-      document.getElementById('adm_sculptPrice').value = '';
-      alert('Sculpture ajoutée à la galerie (provisoire).');
-    }
-
-    function repopulateDemoGallery(){
-      galleryData = [
-        { title: 'Sculpture Bois 1', desc: 'Bois sculpté beige', price: '120 000 MGA', image: 'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Pierre 1', desc: 'Pierre gravée vert naturel', price: '200 000 MGA', image: 'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Mixte 1', desc: 'Bois et pierre', price: '150 000 MGA', image: 'https://images.unsplash.com/photo-1606813908712-7aa1b2aa73b5?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Bois 2', desc: 'Bois sculpté', price: '130 000 MGA', image: 'https://images.unsplash.com/photo-1612832021621-ec4f8bb9c7a5?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Pierre 2', desc: 'Pierre gravée', price: '210 000 MGA', image: 'https://images.unsplash.com/photo-1612832176322-6f1f789a4eb6?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Mixte 2', desc: 'Bois & pierre', price: '160 000 MGA', image: 'https://images.unsplash.com/photo-1612832198732-3b2a3eeb2b1f?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Bois 3', desc: 'Bois finement gravé', price: '140 000 MGA', image: 'https://images.unsplash.com/photo-1612832221015-5b7fc2b6c91c?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Pierre 3', desc: 'Pierre taillée', price: '220 000 MGA', image: 'https://images.unsplash.com/photo-1612832242017-9f1d2e5c3a8f?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Mixte 3', desc: 'Design contemporain', price: '170 000 MGA', image: 'https://images.unsplash.com/photo-1612832253019-0c3a3d7b5d2f?auto=format&fit=crop&w=900&q=60' },
-        { title: 'Sculpture Bois 4', desc: 'Bois poli beige', price: '150 000 MGA', image: 'https://images.unsplash.com/photo-1612832264021-7d1f3f4d3e7f?auto=format&fit=crop&w=900&q=60' }
-      ];
-      renderGallery();
-      alert('Galerie démo restaurée.');
-    }
-
-    // expose renderGallery for immediate use
-    function renderGallery(){
-      const el = document.getElementById('gallery');
-      el.innerHTML = '';
-      if(!galleryData || galleryData.length === 0){
-        el.innerHTML = '<p>Aucune œuvre dans la galerie pour le moment.</p>';
-        return;
-      }
-      galleryData.forEach(item=>{
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" />
-          <div class="card-body">
-            <div class="title">${escapeHtml(item.title)}</div>
-            <div class="desc">${escapeHtml(item.desc || '')}</div>
-            <div class="price">${escapeHtml(item.price || '')}</div>
-          </div>`;
-        el.appendChild(card);
-      });
-    }
-
-  </script>
+function saveAdmin() {
+ document.getElementById('textAccueil').innerText = document.getElementById('editAccueil').value;
+ document.getElementById('textApropos').innerText = document.getElementById('editApropos').value;
+ document.getElementById('listServices').innerHTML = document.getElementById('editServices').value
+ .split("\n").map(s => `<li>${s}</li>`).join('');
+ document.getElementById('contactEmail').innerText = document.getElementById('editEmail').value;
+ document.getElementById('contactTel').innerText = document.getElementById('editTel').value;
+ alert("Modifications enregistrées !");
+}
+</script>
 </body>
 </html>

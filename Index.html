@@ -1,93 +1,3 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sculpture MG — Galerie</title>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: #f9f4ee;
-        color: #333;
-    }
-    header {
-        display: flex;
-        justify-content: space-between;
-        padding: 15px 25px;
-        align-items: center;
-        background: #fff;
-        border-bottom: 1px solid #ddd;
-        position: sticky;
-        top: 0;
-    }
-    h1, h2, h3 {
-        margin: 15px 0;
-    }
-    .btn {
-        background: #e67c35;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-size: 15px;
-    }
-    .gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        padding: 20px;
-    }
-    .card {
-        background: #fff;
-        border-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-    .card img {
-        width: 100%;
-        border-radius: 10px;
-    }
-    #adminPanel {
-        display: none;
-        background: #fff;
-        padding: 20px;
-        margin: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    #loginPanel {
-        padding: 20px;
-        max-width: 300px;
-        margin: 20px auto;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .input {
-        width: 100%;
-        padding: 10px;
-        margin-top: 10px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-</style>
-</head>
-
-<body>
-
-<header>
-    <h2>Sculpture MG</h2>
-    <button class="btn" onclick="showLogin()">Connexion</button>
-</header>
-
-<section style="padding: 20px;">
-    <h1>L'Art de la Sculpture Malgache</h1>
-    <p>Découvrez des œuvres uniques sculptées avec passion…</p>
-</section>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -525,5 +435,107 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('deleteBtn')) {
     e.target.parentElement.remove();
   }
+});
+</script>
+<!-- Part 2 end -->
+
+<!-- ========================= -->
+<!--   PARTIE 3 : Scripts Admin/Login   -->
+<!-- ========================= -->
+<script>
+// --- Données stockées (localStorage) ---
+let gallery = JSON.parse(localStorage.getItem('gallery')) || [];
+let generalText = localStorage.getItem('generalText') || "Bienvenue sur la galerie. Texte d'accueil modifiable dans l'interface admin.";
+
+// --- Connexion Admin ---
+function openLogin() {
+    const pw = prompt("Entrez le mot de passe admin :");
+    if (pw === "admin123") {
+        alert("Connexion réussie !");
+        document.body.classList.add("admin-mode");
+        renderAdminPanel();
+    } else {
+        alert("Mot de passe incorrect.");
+    }
+}
+
+// --- Render Admin Panel ---
+function renderAdminPanel() {
+    const adminBox = document.createElement("div");
+    adminBox.id = "admin-panel";
+    adminBox.innerHTML = `
+        <h2>Admin – Gestion du site</h2>
+        <button onclick="addArtwork()">Ajouter une sculpture</button>
+        <button onclick="changeGeneralText()">Modifier texte général</button>
+        <button onclick="logoutAdmin()">Déconnexion</button>
+        <hr>
+        <h3>Œuvres existantes :</h3>
+        <div id="admin-list"></div>
+    `;
+    document.body.appendChild(adminBox);
+    refreshAdminList();
+}
+
+// -- Mise à jour liste ---
+function refreshAdminList() {
+    const list = document.getElementById("admin-list");
+    if (!list) return;
+    list.innerHTML = "";
+
+    gallery.forEach((item, i) => {
+        list.innerHTML += `
+            <div style="margin-bottom:10px; padding:10px; border:1px solid #ccc; border-radius:10px;">
+                <b>${item.title}</b><br>
+                <img src="${item.url}" style="width:120px; height:auto; border-radius:6px; margin-top:5px;"><br>
+                <button onclick="deleteArtwork(${i})" style="margin-top:5px;">Supprimer</button>
+            </div>
+        `;
+    });
+}
+
+// --- Ajouter une sculpture ---
+function addArtwork() {
+    const title = prompt("Nom de la sculpture :");
+    if (!title) return;
+
+    const url = prompt("URL de l’image :");
+    if (!url) return;
+
+    gallery.push({ title, url });
+    localStorage.setItem('gallery', JSON.stringify(gallery));
+    refreshAdminList();
+    alert("Sculpture ajoutée !");
+}
+
+// --- Supprimer une sculpture ---
+function deleteArtwork(i) {
+    gallery.splice(i, 1);
+    localStorage.setItem('gallery', JSON.stringify(gallery));
+    refreshAdminList();
+}
+
+// --- Modifier texte général ---
+function changeGeneralText() {
+    const newText = prompt("Nouveau texte d’accueil :", generalText);
+    if (!newText) return;
+
+    generalText = newText;
+    localStorage.setItem('generalText', generalText);
+    document.getElementById("general-text").innerText = generalText;
+    alert("Texte mis à jour !");
+}
+
+// --- Déconnexion admin ---
+function logoutAdmin() {
+    alert("Déconnecté.");
+    document.body.classList.remove("admin-mode");
+    const panel = document.getElementById("admin-panel");
+    if (panel) panel.remove();
+}
+
+// --- Charger texte général au démarrage ---
+document.addEventListener("DOMContentLoaded", () => {
+    const txt = document.getElementById("general-text");
+    if (txt) txt.innerText = generalText;
 });
 </script>

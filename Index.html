@@ -1,289 +1,177 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nature Artisanale — Galerie</title>
-<style>
-:root {
-  --bg:#ffffff; --accent:#8B5E3C; --muted:#555; --card:#f9f9f9;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#222;}
-header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;border-bottom:1px solid rgba(0,0,0,0.05);}
-header .brand{font-weight:700;font-size:1.3rem;color:var(--accent);}
-nav button{margin-left:10px;padding:8px 16px;border:none;border-radius:999px;background:var(--accent);color:#fff;cursor:pointer;}
-nav button.outline{background:transparent;border:2px solid var(--accent);color:var(--accent);}
-main{padding:20px;}
-h1,h2,h3,h4{color:var(--accent);}
-button{cursor:pointer;}
-.hero{display:flex;flex-direction:column;gap:15px;text-align:center;margin-bottom:30px;align-items:center;}
-.hero img{max-width:350px;border-radius:12px;object-fit:cover;}
-.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px;}
-.actions button{padding:10px 18px;border-radius:8px;border:none;background:var(--accent);color:#fff;}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px;}
-.card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);transition: transform 0.3s, box-shadow 0.3s;}
-.card:hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(0,0,0,0.15);}
-.card img{width:100%;height:180px;object-fit:cover;display:block;}
-.card-body{padding:10px;}
-.card-body .title{font-weight:700;margin-bottom:5px;}
-.card-body .desc{font-size:14px;color:var(--muted);margin-bottom:8px;}
-.card-body .price{font-weight:700;color:var(--accent);}
-.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);padding:15px;}
-.modal.open{display:flex;}
-.panel{background:white;padding:15px;border-radius:12px;max-width:600px;width:100%;}
-input, textarea, select{width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;}
-#adminPanel{background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.95));padding:15px;border-radius:10px;margin-top:20px;display:none;}
-footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color:var(--muted);}
-@media(min-width:768px){.hero{flex-direction:row;justify-content:space-between;text-align:left;}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L'Art de la Sculpture Malgache</title>
+  <style>
+    body{margin:0;font-family:Arial;background:#f5f4f2;color:#222}
+    header{background:#222;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}
+    header .brand{font-size:22px;font-weight:bold}
+    nav button{margin-left:10px;padding:8px 14px;border:0;background:#ff8c3a;color:#fff;border-radius:6px;cursor:pointer}
+    nav button:hover{opacity:.8}
+    main{padding:20px}
+    section{display:none;animation:fade .4s ease}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
+
+    /* Galerie */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;margin-top:20px}
+    .gallery img{width:100%;height:180px;object-fit:cover;border-radius:8px;box-shadow:0 3px 6px rgba(0,0,0,.2)}
+
+    /* Admin */
+    #adminPanel input,#adminPanel textarea, #adminPanel select{width:100%;padding:8px;margin:8px 0;border-radius:5px;border:1px solid #ccc}
+    #adminPanel button{background:#333;color:#fff;padding:10px 15px;border:0;border-radius:6px;margin-top:10px;cursor:pointer}
+
+  </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">Nature Artisanale</div>
+  <div class="brand">L'Art de la Sculpture Malgache</div>
   <nav>
-    <button id="btnAccueil">Accueil</button>
-    <button id="btnGalerie">Galerie</button>
-    <button id="btnApropos">À propos</button>
-    <button id="btnContact">Contact</button>
-    <button id="btnConnexion" class="outline">Connexion</button>
+    <button onclick="openSection('accueil')">Accueil</button>
+    <button onclick="openSection('services')">Services</button>
+    <button onclick="openSection('galerie')">Galerie</button>
+    <button onclick="openSection('apropos')">À propos</button>
+    <button onclick="openSection('contact')">Contact</button>
+    <button onclick="openSection('admin')">Admin</button>
   </nav>
 </header>
 
 <main>
-  <!-- Accueil -->
-  <section id="sectionAccueil" class="hero">
-    <div>
-      <h1>Jery RAZAFINDRANAIVO - Sculpteur Malgache</h1>
-      <p id="bioText">
-        Depuis des siècles, Madagascar est connue pour son art de la sculpture sur bois et pierre.  
-        Jery puise son inspiration dans la tradition des Zafimaniry et des Mahafaly, perpétuant un héritage unique.  
-        Chaque œuvre raconte l’histoire de la nature, de la culture et de l’âme malgache.
-      </p>
-      <div class="actions">
-        <button id="btnCommander">Commander une œuvre</button>
-        <button id="btnVoirGalerie">Explorer la galerie</button>
-      </div>
-    </div>
-    <div>
-      <img src="https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=600&q=60" alt="Sculpteur malgache">
-    </div>
+  
+  <!-- ACCUEIL -->
+  <section id="accueil" style="display:block;">
+    <h1>Bienvenue dans l'Art de la Sculpture Malgache</h1>
+    <p id="accueilText">La sculpture traditionnelle malgache est un héritage ancien, inspiré des ancêtres, des paysages et des croyances profondes. Chaque œuvre raconte une histoire unique et transmet l'âme du peuple malgache.</p>
+    <img id="accueilImage" src="https://i.imgur.com/Vq5TFoG.jpeg" style="width:100%;max-width:600px;border-radius:12px;margin-top:15px;" />
   </section>
 
-  <!-- Galerie -->
-  <section id="sectionGalerie" style="display:none;">
-    <h2>Galerie d'œuvres</h2>
-    <div id="gallery" class="gallery"></div>
+  <!-- SERVICES -->
+  <section id="services">
+    <h2>Nos Services</h2>
+    <ul id="servicesList">
+      <li>Commandes personnalisées</li>
+      <li>Restauration d'œuvres</li>
+      <li>Expositions</li>
+      <li>Ateliers & Formations</li>
+    </ul>
   </section>
 
-  <!-- Commander -->
-  <section id="sectionCommande" style="display:none;">
-    <h2>Commander une œuvre</h2>
-    <form id="commandeForm" onsubmit="return false">
-      <input type="text" id="c_nom" placeholder="Votre nom" required>
-      <input type="email" id="c_email" placeholder="Votre e-mail" required>
-      <select id="c_type">
-        <option value="">Sélectionner le type de sculpture</option>
-        <option value="bois">Bois</option>
-        <option value="pierre">Pierre</option>
-        <option value="mixtes">Mixtes</option>
-      </select>
-      <input type="text" id="c_taille" placeholder="Taille / Dimension">
-      <textarea id="c_msg" placeholder="Message / détails"></textarea>
-      <select id="c_paiement">
-        <option value="">Moyen de paiement</option>
-        <option value="virement">Virement bancaire</option>
-        <option value="om">Orange Money</option>
-      </select>
-      <button onclick="envoyerCommande()">Envoyer la commande</button>
-    </form>
+  <!-- GALERIE -->
+  <section id="galerie">
+    <h2>Galerie</h2>
+    <div class="gallery" id="galleryDisplay"></div>
   </section>
 
-  <!-- À propos -->
-  <section id="sectionApropos" style="display:none;">
-    <h2>À propos du sculpteur</h2>
-    <p id="aproposText">
-      Jery transforme le bois et la pierre en sculptures uniques aux couleurs beige et vert naturel.  
-      Son travail célèbre la nature, la culture malgache et la créativité artisanale.
-    </p>
+  <!-- A PROPOS -->
+  <section id="apropos">
+    <h2>À propos</h2>
+    <p id="aproposText">Sculpteur malgache passionné depuis plus de 20 ans, spécialisé dans la création d'œuvres en bois, pierre et matériaux traditionnels.</p>
   </section>
 
-  <!-- Contact -->
-  <section id="sectionContact" style="display:none;">
+  <!-- CONTACT -->
+  <section id="contact">
     <h2>Contact</h2>
-    <p>Email: contact@natureartisanale.mg</p>
-    <p>Téléphone: +261 34 00 000 00</p>
-    <p>Facebook: <a href="#">facebook.com/natureartisanale</a></p>
+    <p>Email : <span id="contactEmail">contact@example.com</span></p>
+    <p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
   </section>
 
-  <!-- Admin Panel -->
-  <section id="adminPanel">
-    <h3>Interface Admin</h3>
-    <button onclick="logoutAdmin()">Déconnexion</button>
+  <!-- ADMIN -->
+  <section id="admin">
+    <h2>Panneau Admin</h2>
 
-    <h4>Modifier Biographie</h4>
-    <textarea id="adminBio"></textarea>
-    <button onclick="saveBio()">Enregistrer biographie</button>
+    <h3>Modifier Accueil</h3>
+    <textarea id="adm_accueilText"></textarea>
+    <input type="text" id="adm_accueilImage" placeholder="URL image accueil" />
+    <button onclick="saveAccueil()">Mettre à jour Accueil</button>
 
-    <h4>Modifier Accueil / Préhistoire</h4>
-    <textarea id="adminPrehistoire"></textarea>
-    <button onclick="savePrehistoire()">Enregistrer Accueil</button>
+    <h3>Modifier Services</h3>
+    <textarea id="adm_servicesList"></textarea>
+    <button onclick="saveServices()">Mettre à jour Services</button>
 
-    <h4>Modifier À propos</h4>
-    <textarea id="adminApropos"></textarea>
-    <button onclick="saveApropos()">Enregistrer À propos</button>
+    <h3>Modifier À propos</h3>
+    <textarea id="adm_apropos"></textarea>
+    <button onclick="saveApropos()">Mettre à jour À propos</button>
 
-    <h4>Modifier Contacts</h4>
-    <input type="text" id="adminEmail" placeholder="Email">
-    <input type="text" id="adminTel" placeholder="Téléphone">
-    <input type="text" id="adminFacebook" placeholder="Facebook">
-    <button onclick="saveContact()">Enregistrer Contact</button>
+    <h3>Modifier Contact</h3>
+    <input id="adm_contactEmail" placeholder="Email" />
+    <input id="adm_contactTel" placeholder="Téléphone" />
+    <button onclick="saveContact()">Mettre à jour Contact</button>
 
-    <h4>Galerie</h4>
-    <div id="adminGallery"></div>
-    <input type="file" id="adminFile" accept="image/*">
-    <input type="text" id="adminTitle" placeholder="Titre">
-    <input type="text" id="adminDesc" placeholder="Description">
-    <input type="text" id="adminPrice" placeholder="Prix">
-    <button onclick="uploadArtwork()">Ajouter sculpture</button>
+    <h3>Ajouter sculpture</h3>
+    <input type="text" id="sculpTitre" placeholder="Titre" />
+    <input type="text" id="sculpImg" placeholder="URL image" />
+    <textarea id="sculpDesc" placeholder="Description"></textarea>
+    <button onclick="ajoutSculpture()">Ajouter</button>
   </section>
+
 </main>
 
-<footer>
-  © <span id="year"></span> Nature Artisanale — Fait avec ❤️ à Madagascar
-</footer>
-
-<!-- Modal Connexion -->
-<div id="modalConnexion" class="modal">
-  <div class="panel">
-    <h3>Connexion</h3>
-    <select id="roleSelect">
-      <option value="client">Client / Visiteur</option>
-      <option value="admin">Admin</option>
-    </select>
-    <input type="email" id="loginEmail" placeholder="E-mail (client)">
-    <input type="password" id="loginPwd" placeholder="Mot de passe (admin)">
-    <button onclick="login()">Se connecter</button>
-    <button onclick="closeModal()">Annuler</button>
-  </div>
-</div>
-
 <script>
-// ==== Variables ====
-let isAdmin=false;
-const galleryData=[
-  {title:'Sculpture Bois 1',desc:'Bois sculpté beige',price:'120 000 MGA',image:'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Pierre 1',desc:'Pierre gravée vert naturel',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Mixte 1',desc:'Bois et pierre beige & vert naturel',price:'150 000 MGA',image:'https://images.unsplash.com/photo-1606813908712-7aa1b2aa73b5?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Bois 2',desc:'Bois sculpté beige',price:'130 000 MGA',image:'https://images.unsplash.com/photo-1612832021621-ec4f8bb9c7a5?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Pierre 2',desc:'Pierre gravée vert naturel',price:'210 000 MGA',image:'https://images.unsplash.com/photo-1612832176322-6f1f789a4eb6?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Mixte 2',desc:'Bois et pierre beige & vert naturel',price:'160 000 MGA',image:'https://images.unsplash.com/photo-1612832198732-3b2a3eeb2b1f?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Bois 3',desc:'Bois sculpté beige',price:'140 000 MGA',image:'https://images.unsplash.com/photo-1612832221015-5b7fc2b6c91c?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Pierre 3',desc:'Pierre gravée vert naturel',price:'220 000 MGA',image:'https://images.unsplash.com/photo-1612832242017-9f1d2e5c3a8f?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Mixte 3',desc:'Bois et pierre beige & vert naturel',price:'170 000 MGA',image:'https://images.unsplash.com/photo-1612832253019-0c3a3d7b5d2f?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture Bois 4',desc:'Bois sculpté beige',price:'150 000 MGA',image:'https://images.unsplash.com/photo-1612832264021-7d1f3f4d3e7f?auto=format&fit=crop&w=800&q=60'}
+
+function openSection(id){
+  document.querySelectorAll('main section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+let gallery=[
+  {img:"https://i.imgur.com/1.jpg"},
+  {img:"https://i.imgur.com/2.jpg"},
+  {img:"https://i.imgur.com/3.jpg"},
+  {img:"https://i.imgur.com/4.jpg"},
+  {img:"https://i.imgur.com/5.jpg"},
+  {img:"https://i.imgur.com/6.jpg"},
+  {img:"https://i.imgur.com/7.jpg"},
+  {img:"https://i.imgur.com/8.jpg"},
+  {img:"https://i.imgur.com/9.jpg"},
+  {img:"https://i.imgur.com/10.jpg"}
 ];
 
-// ==== Initial Render ====
-document.getElementById('year').textContent=new Date().getFullYear();
-const galleryEl=document.getElementById('gallery');
-function renderGallery(){
-  galleryEl.innerHTML='';
-  galleryData.forEach(a=>{
-    const div=document.createElement('div'); div.className='card';
-    div.innerHTML = `<img src="${a.image}" alt="${a.title}" loading="lazy" style="width:100%;height:180px;object-fit:cover;">
-      <div class="card-body">
-        <div class="title">${a.title}</div>
-        <div class="desc">${a.desc}</div>
-        <div class="price">${a.price}</div>
-      </div>`;
-    galleryEl.appendChild(div);
+function showGallery(){
+  let g=document.getElementById('galleryDisplay');
+  g.innerHTML="";
+  gallery.forEach(a=>{
+    g.innerHTML+=`<img src="${a.img}" />`;
   });
 }
-window.addEventListener('DOMContentLoaded', renderGallery);
+showGallery();
 
-// ==== Navigation ====
-function hideAllSections(){document.querySelectorAll('main section').forEach(s=>s.style.display='none');}
-document.getElementById('btnAccueil').onclick=()=>{hideAllSections();document.getElementById('sectionAccueil').style.display='flex';}
-document.getElementById('btnGalerie').onclick=()=>{hideAllSections();document.getElementById('sectionGalerie').style.display='block';}
-document.getElementById('btnApropos').onclick=()=>{hideAllSections();document.getElementById('sectionApropos').style.display='block';}
-document.getElementById('btnContact').onclick=()=>{hideAllSections();document.getElementById('sectionContact').style.display='block';}
-document.getElementById('btnVoirGalerie').onclick=()=>{hideAllSections();document.getElementById('sectionGalerie').style.display='block';}
-document.getElementById('btnCommander').onclick=()=>{hideAllSections();document.getElementById('sectionCommande').style.display='block';}
-
-// ==== Modal Connexion ====
-const modal=document.getElementById('modalConnexion');
-document.getElementById('btnConnexion').onclick=()=>{modal.classList.add('open');}
-function closeModal(){modal.classList.remove('open');}
-
-// ==== Login ====
-function login(){
-  const role=document.getElementById('roleSelect').value;
-  if(role==='admin'){
-    const pwd=document.getElementById('loginPwd').value;
-    if(pwd==='admin123'){
-      isAdmin=true;
-      alert('Connecté en tant Admin');
-      modal.classList.remove('open');
-      document.getElementById('adminPanel').style.display='block';
-      document.getElementById('adminBio').value=document.getElementById('bioText').innerText;
-      document.getElementById('adminPrehistoire').value=document.getElementById('bioText').innerText;
-      document.getElementById('adminApropos').value=document.getElementById('aproposText').innerText;
-      document.getElementById('adminEmail').value = document.querySelector('#sectionContact p:nth-child(1)').innerText.replace('Email: ','');
-      document.getElementById('adminTel').value = document.querySelector('#sectionContact p:nth-child(2)').innerText.replace('Téléphone: ','');
-      document.getElementById('adminFacebook').value = document.querySelector('#sectionContact p:nth-child(3) a').innerText;
-    } else {alert('Mot de passe incorrect');}
-  } else {
-    const email=document.getElementById('loginEmail').value;
-    if(email){alert('Connecté en tant que client : '+email);modal.classList.remove('open');}
-    else{alert('Veuillez entrer votre e-mail');}
-  }
+// ADMIN SAVE FUNCTIONS
+function saveAccueil(){
+  document.getElementById('accueilText').innerText=document.getElementById('adm_accueilText').value;
+  document.getElementById('accueilImage').src=document.getElementById('adm_accueilImage').value;
+  alert('Accueil mis à jour');
 }
 
-// ==== Admin Functions ====
-function saveBio(){if(!isAdmin){alert('Seul l’admin peut modifier');return;}document.getElementById('bioText').innerText=document.getElementById('adminBio').value;alert('Biographie sauvegardée !');}
-function savePrehistoire(){if(!isAdmin){alert('Seul l’admin peut modifier');return;}document.getElementById('bioText').innerText=document.getElementById('adminPrehistoire').value;alert('Accueil sauvegardé !');}
-function saveApropos(){if(!isAdmin){alert('Seul l’admin peut modifier');return;}document.getElementById('aproposText').innerText=document.getElementById('adminApropos').value;alert("Section À propos mise à jour !");}
+function saveServices(){
+  const list=document.getElementById('adm_servicesList').value.split("
+");
+  let ul="";
+  list.forEach(i=>ul+=`<li>${i}</li>`);
+  document.getElementById('servicesList').innerHTML=ul;
+  alert('Services mis à jour');
+}
+
+function saveApropos(){
+  document.getElementById('aproposText').innerText=document.getElementById('adm_apropos').value;
+  alert('À propos mis à jour');
+}
+
 function saveContact(){
-  if(!isAdmin){alert('Seul l’admin peut modifier'); return;}
-  const email = document.getElementById('adminEmail').value;
-  const tel = document.getElementById('adminTel').value;
-  const fb = document.getElementById('adminFacebook').value;
-  if(email) document.querySelector('#sectionContact p:nth-child(1)').innerText = "Email: " + email;
-  if(tel) document.querySelector('#sectionContact p:nth-child(2)').innerText = "Téléphone: " + tel;
-  if(fb) document.querySelector('#sectionContact p:nth-child(3) a').innerText = fb;
-  alert('Contacts mis à jour !');
-}
-function logoutAdmin(){isAdmin=false;document.getElementById('adminPanel').style.display='none';alert('Déconnecté');}
-function uploadArtwork(){
-  if(!isAdmin){alert('Seul l’admin peut ajouter des œuvres');return;}
-  const file=document.getElementById('adminFile').files[0];
-  const titre=document.getElementById('adminTitle').value;
-  const desc=document.getElementById('adminDesc').value;
-  const prix=document.getElementById('adminPrice').value;
-  if(!file || !titre || !desc || !prix){alert('Remplissez tous les champs et sélectionnez une image'); return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const newArt={title:titre,desc:desc,price:prix,image:e.target.result};
-    galleryData.push(newArt);
-    renderGallery();
-    alert('Sculpture ajoutée !');
-  }
-  reader.readAsDataURL(file);
+  document.getElementById('contactEmail').innerText=document.getElementById('adm_contactEmail').value;
+  document.getElementById('contactTel').innerText=document.getElementById('adm_contactTel').value;
+  alert('Contact mis à jour');
 }
 
-// ==== Commande Form ====
-function envoyerCommande(){
-  const nom=document.getElementById('c_nom').value;
-  const email=document.getElementById('c_email').value;
-  const type=document.getElementById('c_type').value;
-  const taille=document.getElementById('c_taille').value;
-  const msg=document.getElementById('c_msg').value;
-  const paiement=document.getElementById('c_paiement').value;
-  if(!nom||!email||!type||!paiement){alert('Veuillez remplir tous les champs obligatoires');return;}
-  alert(`Commande reçue !\nNom: ${nom}\nEmail: ${email}\nType: ${type}\nTaille: ${taille}\nPaiement: ${paiement}\nMessage: ${msg}`);
+function ajoutSculpture(){
+  const img=document.getElementById('sculpImg').value;
+  gallery.push({img:img});
+  showGallery();
+  alert('Nouvelle sculpture ajoutée !');
 }
+
 </script>
+
 </body>
 </html>

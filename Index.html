@@ -7,24 +7,29 @@
 <style>
 body { margin:0; font-family: Arial, sans-serif; background:#f7f3ef; }
 header { background:#2f2b28; color:white; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
-nav { display:flex; justify-content:center; gap:10px; background:#403c38; padding:10px; position:sticky; top:0; z-index:1100; }
+nav { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; background:#403c38; padding:10px; }
 nav button { padding:10px 15px; background:#d9a066; border:none; color:white; cursor:pointer; border-radius:5px; font-weight:bold; }
 nav button:hover { background:#bb873f; }
 section { display:none; padding:20px; }
 section.visible { display:block; }
 .hero { text-align:center; background:white; padding:20px; border-radius:10px; }
-.hero img { width:100%; max-height:300px; object-fit:cover; border-radius:10px; }
-.gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:15px; }
-.card { background:white; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; cursor:pointer; transition: transform 0.2s; }
-.card:hover { transform: translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.2); }
-.card img { width:100%; height:150px; object-fit:cover; }
-.card .info { padding:10px; }
-.card .info h4 { margin:5px 0; font-size:16px; color:#2f2b28; }
-.card .info p { font-size:14px; color:#555; margin:0; }
-.admin-panel { background:white; padding:20px; border-radius:10px; }
-.admin-panel textarea, .admin-panel input, .admin-panel input[type=file] { width:100%; padding:10px; margin-bottom:10px; }
-#overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:1200; }
-#overlay img { max-width:90%; max-height:90%; border-radius:10px; cursor:pointer; }
+.hero img { width:100%; max-height:300px; object-fit:cover; border-radius:10px; cursor:pointer; }
+.gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; }
+.gallery img { width:100%; height:150px; object-fit:cover; border-radius:8px; cursor:pointer; transition: transform 0.2s; }
+.gallery img:hover { transform: scale(1.05); }
+.service-card { background:white; padding:15px; border-radius:8px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.15); transition: transform 0.2s; }
+.service-card:hover { transform: translateY(-5px); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+.admin-panel { background:#fdf5e6; padding:15px; border-radius:10px; margin-top:10px; }
+.admin-panel textarea, .admin-panel input { width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; }
+.admin-panel button { padding:10px 15px; background:#d9a066; border:none; color:white; cursor:pointer; border-radius:5px; font-weight:bold; }
+.admin-panel button:hover { background:#bb873f; }
+.lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:10000; }
+.lightbox img { max-width:90%; max-height:90%; border-radius:10px; }
+.lightbox:target { display:flex; }
+@media (max-width:600px){
+  nav { flex-direction:column; }
+  .service-card { margin-bottom:10px; }
+}
 </style>
 </head>
 <body>
@@ -37,171 +42,181 @@ section.visible { display:block; }
 <button onclick="openSection('services')">Services</button>
 <button onclick="openSection('galerie')">Galerie</button>
 <button onclick="openSection('contact')">Contact</button>
-<button onclick="openSection('admin')">Admin</button>
 </nav>
 
+<!-- ACCUEIL -->
 <section id="accueil" class="hero visible">
 <h2>Bienvenue dans l'univers de la sculpture malgache</h2>
-<img id="imgAccueil" src="">
-<p id="textAccueil">
-Depuis des siècles, l'art de la sculpture malgache transmet l'histoire, la culture et l'âme du peuple à travers le bois et la pierre.<br>
-Le sculpteur malgache perpétue des techniques ancestrales.<br>
-Chaque œuvre raconte un récit unique de Madagascar.<br>
-Les matériaux naturels sont transformés en art raffiné.<br>
-Cet héritage culturel est partagé à travers expositions et ateliers.
-</p>
+<img id="imgAccueil" src="" alt="Accueil" onclick="openLightbox(this.src)">
+<p id="textAccueil">[Histoire du sculpteur malgache, 5 lignes modifiables]</p>
+
+<div class="admin-panel">
+<h3>Admin Accueil</h3>
+<textarea id="editAccueil" rows="5" placeholder="Texte Accueil"></textarea>
+<input type="file" id="fileAccueil" accept="image/*" onchange="loadAccueilImage(event)">
+<button onclick="saveAccueil()">Enregistrer Accueil</button>
+</div>
 </section>
 
+<!-- À PROPOS -->
 <section id="apropos">
 <h2>À propos</h2>
 <p id="textApropos">Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.</p>
+
+<div class="admin-panel">
+<h3>Admin À propos</h3>
+<textarea id="editApropos" rows="5"></textarea>
+<button onclick="saveApropos()">Enregistrer À propos</button>
+</div>
 </section>
 
+<!-- SERVICES -->
 <section id="services">
 <h2>Services</h2>
-<ul id="listServices">
-<li>Commandes personnalisées</li>
-<li>Restauration d'œuvres</li>
-<li>Expositions</li>
-<li>Ateliers & Formations</li>
-</ul>
+<div id="listServices">
+<div class="service-card">Commandes personnalisées</div>
+<div class="service-card">Restauration d'œuvres</div>
+<div class="service-card">Expositions</div>
+<div class="service-card">Ateliers & Formations</div>
+</div>
+
+<div class="admin-panel">
+<h3>Admin Services</h3>
+<textarea id="editServices" rows="5" placeholder="Une ligne = un service"></textarea>
+<button onclick="saveServices()">Enregistrer Services</button>
+</div>
 </section>
 
+<!-- GALERIE -->
 <section id="galerie">
 <h2>Galerie</h2>
 <div class="gallery" id="galleryContainer"></div>
+
+<div class="admin-panel">
+<h3>Admin Galerie</h3>
+<div id="galleryAdmin"></div>
+<button onclick="renderGalleryAdmin()">Rafraîchir Galerie</button>
+</div>
 </section>
 
+<!-- CONTACT -->
 <section id="contact">
 <h2>Contact</h2>
 <p>Email : <span id="contactEmail">sculpture@example.com</span></p>
 <p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
 <p>Facebook : <span id="contactFB">facebook.com/sculpture</span></p>
 <p>WhatsApp : <span id="contactWA">+261 34 00 000 00</span></p>
+
+<div class="admin-panel">
+<h3>Admin Contact</h3>
+<input id="editEmail" placeholder="Email">
+<input id="editTel" placeholder="Téléphone">
+<input id="editFB" placeholder="Facebook">
+<input id="editWA" placeholder="WhatsApp">
+<button onclick="saveContact()">Enregistrer Contact</button>
+</div>
 </section>
 
-<section id="admin" class="admin-panel">
-<h2>Panel Admin</h2>
-
-<label>Texte Accueil :</label>
-<textarea id="editAccueil"></textarea>
-<label>Image Accueil :</label>
-<input type="file" id="editImgAccueil" accept="image/*">
-
-<label>Texte À propos :</label>
-<textarea id="editApropos"></textarea>
-
-<label>Services (une par ligne) :</label>
-<textarea id="editServices"></textarea>
-
-<label>Email Contact :</label>
-<input id="editEmail">
-<label>Téléphone :</label>
-<input id="editTel">
-<label>Facebook :</label>
-<input id="editFB">
-<label>WhatsApp :</label>
-<input id="editWA">
-
-<h3>Ajouter une image dans la galerie :</h3>
-<label>Titre :</label>
-<input id="newTitle">
-<label>Image (depuis votre appareil) :</label>
-<input type="file" id="newImg" accept="image/*">
-<label>Description :</label>
-<input id="newDesc">
-<button onclick="addGallery()">Ajouter</button>
-
-<button onclick="saveAdmin()">Enregistrer toutes les modifications</button>
-</section>
-
-<div id="overlay"><img id="overlayImg"></div>
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+<img id="lightboxImg" src="">
+</div>
 
 <script>
+let galleryData = [];
+
+// Section toggle
 function openSection(id){
-  document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
-  document.getElementById('overlay').style.display='none';
+  if(id==='galerie') renderGalleryAdmin();
+}
+
+// Lightbox
+function openLightbox(src){
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').style.display='flex';
+}
+
+// Accueil image locale
+function loadAccueilImage(event){
+  const file = event.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e => { document.getElementById('imgAccueil').src = e.target.result; };
+    reader.readAsDataURL(file);
+  }
+}
+
+// Admin functions
+function saveAccueil(){
+  document.getElementById('textAccueil').innerText = document.getElementById('editAccueil').value || '[Histoire du sculpteur malgache, 5 lignes modifiables]';
+}
+function saveApropos(){
+  document.getElementById('textApropos').innerText = document.getElementById('editApropos').value || 'Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.';
+}
+function saveServices(){
+  const services = document.getElementById('editServices').value.split("\n").filter(Boolean)
+    .map(s=>`<div class="service-card">${s}</div>`).join('');
+  document.getElementById('listServices').innerHTML = services;
+}
+function saveContact(){
+  document.getElementById('contactEmail').innerText = document.getElementById('editEmail').value || 'sculpture@example.com';
+  document.getElementById('contactTel').innerText = document.getElementById('editTel').value || '+261 34 00 000 00';
+  document.getElementById('contactFB').innerText = document.getElementById('editFB').value || 'facebook.com/sculpture';
+  document.getElementById('contactWA').innerText = document.getElementById('editWA').value || '+261 34 00 000 00';
 }
 
 // Galerie
-let galleryData = [
-  {title:'Sculpture Bois 1', img:'https://i.imgur.com/pyK8b0X.jpeg', desc:'Bois sculpté beige'},
-  {title:'Sculpture Bois 2', img:'https://i.imgur.com/4SZW6Cf.jpeg', desc:'Bois sculpté'},
-  {title:'Sculpture Pierre 1', img:'https://i.imgur.com/T1VJc1o.jpeg', desc:'Pierre gravée'},
-  {title:'Sculpture Mixte 1', img:'https://i.imgur.com/1eBfMpc.jpeg', desc:'Bois et pierre'},
-  {title:'Sculpture Bois 3', img:'https://i.imgur.com/rm7d2Bo.jpeg', desc:'Bois finement gravé'},
-  {title:'Sculpture Pierre 2', img:'https://i.imgur.com/4iP2vBn.jpeg', desc:'Pierre gravée verte'},
-  {title:'Sculpture Mixte 2', img:'https://i.imgur.com/fPVBVFt.jpeg', desc:'Bois et pierre'},
-  {title:'Sculpture Bois 4', img:'https://i.imgur.com/Zx7f1MM.jpeg', desc:'Bois poli'},
-  {title:'Sculpture Pierre 3', img:'https://i.imgur.com/6HkE1fN.jpeg', desc:'Pierre taillée'},
-  {title:'Sculpture Mixte 3', img:'https://i.imgur.com/aXjdbxl.jpeg', desc:'Design contemporain'}
-];
-
 function renderGallery(){
   const container = document.getElementById('galleryContainer');
+  container.innerHTML = galleryData.map((item,index)=>
+    `<img src="${item.image}" onclick="openLightbox('${item.image}')">`
+  ).join('');
+}
+
+function renderGalleryAdmin(){
+  const container = document.getElementById('galleryAdmin');
   container.innerHTML = '';
-  galleryData.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${item.img}" alt="${item.title}" onclick="showOverlay('${item.img}')">
-      <div class="info">
-        <h4>${item.title}</h4>
-        <p>${item.desc}</p>
-      </div>
+  galleryData.forEach((item,index)=>{
+    const div = document.createElement('div');
+    div.style.marginBottom="10px";
+    div.innerHTML = `
+      <img src="${item.image}" style="width:100px;height:100px;object-fit:cover;border-radius:5px;">
+      <input type="file" onchange="updateGalleryImage(event, ${index})">
+      <button onclick="deleteGalleryImage(${index})">Supprimer</button>
     `;
-    container.appendChild(card);
+    container.appendChild(div);
   });
 }
-renderGallery();
 
-function showOverlay(src){
-  const overlay = document.getElementById('overlay');
-  document.getElementById('overlayImg').src = src;
-  overlay.style.display='flex';
-}
-document.getElementById('overlay').onclick = ()=>{document.getElementById('overlay').style.display='none';};
-
-// Admin
-function saveAdmin(){
-  document.getElementById('textAccueil').innerText = document.getElementById('editAccueil').value;
-  const file = document.getElementById('editImgAccueil').files[0];
+function updateGalleryImage(event,index){
+  const file = event.target.files[0];
   if(file){
     const reader = new FileReader();
-    reader.onload = function(e){ document.getElementById('imgAccueil').src = e.target.result; };
+    reader.onload = e=>{
+      galleryData[index].image = e.target.result;
+      renderGallery();
+      renderGalleryAdmin();
+    };
     reader.readAsDataURL(file);
   }
-  document.getElementById('textApropos').innerText = document.getElementById('editApropos').value;
-  document.getElementById('listServices').innerHTML = document.getElementById('editServices').value.split("\n").map(s=>`<li>${s}</li>`).join('');
-  document.getElementById('contactEmail').innerText = document.getElementById('editEmail').value;
-  document.getElementById('contactTel').innerText = document.getElementById('editTel').value;
-  document.getElementById('contactFB').innerText = document.getElementById('editFB').value;
-  document.getElementById('contactWA').innerText = document.getElementById('editWA').value;
-  alert('Modifications enregistrées !');
 }
 
-function addGallery(){
-  const file = document.getElementById('newImg').files[0];
-  if(!file){ alert("Veuillez choisir une image"); return; }
-  const reader = new FileReader();
-  reader.onload = function(e){
-    galleryData.unshift({
-      title: document.getElementById('newTitle').value,
-      img: e.target.result,
-      desc: document.getElementById('newDesc').value
-    });
+function deleteGalleryImage(index){
+  if(confirm('Voulez-vous supprimer cette image ?')){
+    galleryData.splice(index,1);
     renderGallery();
-    document.getElementById('newTitle').value='';
-    document.getElementById('newImg').value='';
-    document.getElementById('newDesc').value='';
-    alert('Image ajoutée à la galerie !');
-  };
-  reader.readAsDataURL(file);
+    renderGalleryAdmin();
+  }
 }
 
-// Image accueil par défaut
-document.getElementById('imgAccueil').src = 'https://i.imgur.com/pyK8b0X.jpeg';
+// Initialisation
+document.addEventListener('DOMContentLoaded',()=>{
+  galleryData = [];
+  renderGallery();
+  renderGalleryAdmin();
+});
 </script>
 
 </body>

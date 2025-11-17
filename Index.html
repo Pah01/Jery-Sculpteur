@@ -25,7 +25,6 @@
     nav button:hover{opacity:.9; transform:translateY(-1px)}
     main{max-width:1100px;margin:20px auto;padding:0 16px}
     section{display:none}
-    .visible{display:block}
     /* HERO */
     .hero{
       background-image:linear-gradient(rgba(12,8,6,0.48),rgba(12,8,6,0.24)), url('https://images.unsplash.com/photo-1501270067466-829b09eaf2dd?auto=format&fit=crop&w=1600&q=80');
@@ -82,7 +81,7 @@
 
   <main>
     <!-- ACCUEIL -->
-    <section id="accueil" class="visible hero" aria-label="Accueil">
+    <section id="accueil" class="hero" aria-label="Accueil">
       <div class="text">
         <h1>Histoire & héritage de la sculpture malgache</h1>
         <p id="accueilText">La sculpture malgache puise ses formes et ses motifs dans les traditions ancestrales — poteaux funéraires, symboles de protection et récits communautaires. Jery RAZAFINDRANAIVO perpétue ce savoir-faire en alliant respect du matériau et esthétique contemporaine.</p>
@@ -178,10 +177,16 @@
   </footer>
 
   <script>
-    // --- Utility & initial state ---
+    // utils
+    function escapeHtml(str){
+      if(!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[m]; });
+    }
+
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Initial demo gallery (10 valid Unsplash images)
+    // Demo gallery (realistic sculptures from Unsplash)
     let galleryData = [
       { title: 'Sculpture Bois 1', desc: 'Bois sculpté beige', price: '120 000 MGA', image: 'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=900&q=60' },
       { title: 'Sculpture Pierre 1', desc: 'Pierre gravée vert naturel', price: '200 000 MGA', image: 'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=900&q=60' },
@@ -195,7 +200,7 @@
       { title: 'Sculpture Bois 4', desc: 'Bois poli beige', price: '150 000 MGA', image: 'https://images.unsplash.com/photo-1612832264021-7d1f3f4d3e7f?auto=format&fit=crop&w=900&q=60' }
     ];
 
-    // --- Render functions ---
+    // Render gallery
     function renderGallery(){
       const el = document.getElementById('gallery');
       el.innerHTML = '';
@@ -217,44 +222,42 @@
       });
     }
 
-    // sanitize simple text for injection
-    function escapeHtml(str){
-      if(!str) return '';
-      return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[m]; });
-    }
+    // Fallback for broken images
+    document.addEventListener('error', function(e){
+      const t = e.target;
+      if(t.tagName === 'IMG' && !t.dataset.fallback){
+        t.dataset.fallback = '1';
+        t.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#aaa" font-size="18">Image indisponible</text></svg>';
+      }
+    }, true);
 
-    // show initial galerie on load
-    window.addEventListener('DOMContentLoaded', ()=>{
+    // Init on load
+    window.addEventListener('DOMContentLoaded', function(){
       renderGallery();
-      // prefill admin fields with current content
+      // show accueil by default
+      openSection('accueil');
       prefillAdminFields();
     });
 
-    // --- Navigation ---
+    // Navigation using display (avoids class toggle issues)
     function openSection(id){
-      const sections = ['accueil','services','galerie','apropos','contact','admin'];
-      sections.forEach(s=>{
-        const el = document.getElementById(s);
+      const ids = ['accueil','services','galerie','apropos','contact','admin'];
+      ids.forEach(i=>{
+        const el = document.getElementById(i);
         if(!el) return;
-        if(s === id) el.classList.add('visible'); else el.classList.remove('visible');
+        el.style.display = (i === id) ? 'block' : 'none';
       });
-      // scroll to top for UX
       window.scrollTo({top:0,behavior:'smooth'});
-      // when opening admin, prefill fields
       if(id === 'admin') prefillAdminFields();
     }
 
-    // --- Admin helpers ---
+    // Admin helpers (prefill)
     function prefillAdminFields(){
-      // accueil
       document.getElementById('adm_accueilText').value = document.getElementById('accueilText').innerText.trim();
-      document.getElementById('adm_accueilImage').value = document.getElementById('accueilImage').src;
-      // services (one per line)
+      document.getElementById('adm_accueilImage').value = document.getElementById('accueilImage').src || '';
       const srvEls = Array.from(document.querySelectorAll('#servicesGrid .service-card')).map(n => n.innerText.trim());
       document.getElementById('adm_services').value = srvEls.join('\\n');
-      // apropos
       document.getElementById('adm_apropos').value = document.getElementById('aproposText').innerText.trim();
-      // contact
       document.getElementById('adm_email').value = document.getElementById('contactEmail').innerText.trim();
       document.getElementById('adm_tel').value = document.getElementById('contactTel').innerText.trim();
       document.getElementById('adm_facebook').value = document.getElementById('contactFB').href || '';
@@ -263,14 +266,13 @@
     function saveAccueil(){
       const txt = document.getElementById('adm_accueilText').value.trim();
       const img = document.getElementById('adm_accueilImage').value.trim();
-      if(!txt){ alert('Le texte d\'accueil ne peut pas être vide'); return; }
+      if(!txt){ alert('Le texte d\\'accueil ne peut pas être vide'); return; }
       document.getElementById('accueilText').innerText = txt;
       if(img) document.getElementById('accueilImage').src = img;
       alert('Accueil mis à jour');
     }
 
     function resetAccueil(){
-      // default values
       document.getElementById('adm_accueilText').value = 'La sculpture malgache puise ses formes et ses motifs dans les traditions ancestrales — poteaux funéraires, symboles et récits communautaires.';
       document.getElementById('adm_accueilImage').value = 'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=900&q=60';
       saveAccueil();
@@ -294,7 +296,7 @@
 
     function saveApropos(){
       const txt = document.getElementById('adm_apropos').value.trim();
-      if(!txt){ alert('Le texte "À propos" ne peut pas être vide'); return; }
+      if(!txt){ alert('Le texte \"À propos\" ne peut pas être vide'); return; }
       document.getElementById('aproposText').innerText = txt;
       alert('À propos mis à jour');
     }
@@ -319,12 +321,11 @@
       const desc = (document.getElementById('adm_sculptDesc').value || '').trim();
       const price = (document.getElementById('adm_sculptPrice').value || '').trim();
       if(!img){
-        alert('Veuillez renseigner une URL d\'image valide pour la sculpture.');
+        alert('Veuillez renseigner une URL d\\'image valide pour la sculpture.');
         return;
       }
-      galleryData.unshift({ title, desc, price, image: img }); // add to top
+      galleryData.unshift({ title, desc, price, image: img });
       renderGallery();
-      // clear inputs
       document.getElementById('adm_sculptTitre').value = '';
       document.getElementById('adm_sculptImg').value = '';
       document.getElementById('adm_sculptDesc').value = '';
@@ -333,7 +334,6 @@
     }
 
     function repopulateDemoGallery(){
-      // restore default demo set
       galleryData = [
         { title: 'Sculpture Bois 1', desc: 'Bois sculpté beige', price: '120 000 MGA', image: 'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=900&q=60' },
         { title: 'Sculpture Pierre 1', desc: 'Pierre gravée vert naturel', price: '200 000 MGA', image: 'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=900&q=60' },
@@ -350,16 +350,27 @@
       alert('Galerie démo restaurée.');
     }
 
-    // expose renderGallery for immediate update
-    // (renderGallery already called on DOMContentLoaded)
-    // Add small defensive listener for images broken links:
-    document.addEventListener('error', function(e){
-      const t = e.target;
-      if(t.tagName === 'IMG' && t.dataset.fallback !== '1'){
-        t.dataset.fallback = '1';
-        t.src = 'data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"600\" height=\"400\"><rect width=\"100%\" height=\"100%\" fill=\"#ddd\"/><text x=\"50%\" y=\"50%\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"#888\" font-size=\"20\">Image indisponible</text></svg>';
+    // expose renderGallery for immediate use
+    function renderGallery(){
+      const el = document.getElementById('gallery');
+      el.innerHTML = '';
+      if(!galleryData || galleryData.length === 0){
+        el.innerHTML = '<p>Aucune œuvre dans la galerie pour le moment.</p>';
+        return;
       }
-    }, true);
+      galleryData.forEach(item=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" />
+          <div class="card-body">
+            <div class="title">${escapeHtml(item.title)}</div>
+            <div class="desc">${escapeHtml(item.desc || '')}</div>
+            <div class="price">${escapeHtml(item.price || '')}</div>
+          </div>`;
+        el.appendChild(card);
+      });
+    }
 
   </script>
 </body>

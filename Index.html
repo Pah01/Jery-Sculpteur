@@ -41,32 +41,20 @@ section.visible { display:block; }
 <button onclick="openSection('services')">Services</button>
 <button onclick="openSection('galerie')">Galerie</button>
 <button onclick="openSection('contact')">Contact</button>
+<button onclick="openSection('loginAdmin')">Admin</button>
 </nav>
 
 <!-- ACCUEIL -->
 <section id="accueil" class="hero visible">
 <h2>Bienvenue dans l'univers de la sculpture malgache</h2>
-<img id="imgAccueil" src="https://i.imgur.com/pyK8b0X.jpeg" alt="Accueil" onclick="openLightbox(this.src)">
-<p id="textAccueil">Le sculpteur malgache transmet depuis des générations l'histoire et la culture de Madagascar. Son art mélange tradition et modernité, bois et pierre, dans des œuvres uniques et inspirantes. Il participe à des expositions locales et internationales. Sa passion pour la sculpture est reconnue dans tout le pays. Aujourd'hui, il continue de former de jeunes apprentis et de partager son savoir-faire.</p>
-
-<div class="admin-panel">
-<h3>Admin Accueil</h3>
-<textarea id="editAccueil" rows="5"></textarea>
-<input type="file" accept="image/*" onchange="loadAccueilImage(event)">
-<button onclick="saveAccueil()">Enregistrer Accueil</button>
-</div>
+<img id="imgAccueil" src="" alt="Accueil" onclick="openLightbox(this.src)">
+<p id="textAccueil">[Histoire du sculpteur malgache, 5 lignes modifiables]</p>
 </section>
 
 <!-- À PROPOS -->
 <section id="apropos">
 <h2>À propos</h2>
 <p id="textApropos">Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.</p>
-
-<div class="admin-panel">
-<h3>Admin À propos</h3>
-<textarea id="editApropos" rows="5"></textarea>
-<button onclick="saveApropos()">Enregistrer À propos</button>
-</div>
 </section>
 
 <!-- SERVICES -->
@@ -78,25 +66,12 @@ section.visible { display:block; }
 <div class="service-card">Expositions</div>
 <div class="service-card">Ateliers & Formations</div>
 </div>
-
-<div class="admin-panel">
-<h3>Admin Services</h3>
-<textarea id="editServices" rows="5" placeholder="Une ligne = un service"></textarea>
-<button onclick="saveServices()">Enregistrer Services</button>
-</div>
 </section>
 
 <!-- GALERIE -->
 <section id="galerie">
 <h2>Galerie</h2>
 <div class="gallery" id="galleryContainer"></div>
-
-<div class="admin-panel">
-<h3>Admin Galerie</h3>
-<div id="galleryAdmin"></div>
-<input type="file" id="addGalleryFile" accept="image/*">
-<button onclick="addGalleryImage()">Ajouter une image</button>
-</div>
 </section>
 
 <!-- CONTACT -->
@@ -106,16 +81,63 @@ section.visible { display:block; }
 <p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
 <p>Facebook : <span id="contactFB">facebook.com/sculpture</span></p>
 <p>WhatsApp : <span id="contactWA">+261 34 00 000 00</span></p>
+</section>
 
+<!-- LOGIN ADMIN -->
+<section id="loginAdmin">
+<h2>Connexion Admin</h2>
+<input type="email" id="loginEmail" placeholder="Email Admin" style="width:100%;padding:10px;margin-bottom:10px;">
+<input type="password" id="loginPassword" placeholder="Mot de passe" style="width:100%;padding:10px;margin-bottom:10px;">
+<button onclick="loginAdmin()" style="padding:10px 15px;background:#d9a066;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;">Connexion</button>
+<p id="loginError" style="color:red;margin-top:10px;"></p>
+</section>
+
+<!-- ADMIN SECTIONS -->
+<div id="adminSections" style="display:none;">
+
+<!-- Admin Accueil -->
+<div class="admin-panel">
+<h3>Admin Accueil</h3>
+<textarea id="editAccueil" rows="5" placeholder="Texte Accueil"></textarea>
+<input type="file" id="fileAccueil" accept="image/*" onchange="loadAccueilImage(event)">
+<button onclick="saveAccueil()">Enregistrer Accueil</button>
+</div>
+
+<!-- Admin À propos -->
+<div class="admin-panel">
+<h3>Admin À propos</h3>
+<textarea id="editApropos" rows="5"></textarea>
+<button onclick="saveApropos()">Enregistrer À propos</button>
+</div>
+
+<!-- Admin Services -->
+<div class="admin-panel">
+<h3>Admin Services</h3>
+<textarea id="editServices" rows="5" placeholder="Une ligne = un service"></textarea>
+<button onclick="saveServices()">Enregistrer Services</button>
+</div>
+
+<!-- Admin Galerie -->
+<div class="admin-panel">
+<h3>Admin Galerie</h3>
+<div id="galleryAdmin"></div>
+<button onclick="renderGalleryAdmin()">Rafraîchir Galerie</button>
+</div>
+
+<!-- Admin Contact -->
 <div class="admin-panel">
 <h3>Admin Contact</h3>
 <input id="editEmail" placeholder="Email">
 <input id="editTel" placeholder="Téléphone">
 <input id="editFB" placeholder="Facebook">
 <input id="editWA" placeholder="WhatsApp">
-<button onclick="saveContact()">Enregistrer Contact</button>
+<h4>Modifier identifiants Admin</h4>
+<input id="newAdminEmail" placeholder="Nouvel Email">
+<input id="newAdminPass" placeholder="Nouveau Mot de passe">
+<button onclick="saveContact()">Enregistrer Contact et identifiants</button>
 </div>
-</section>
+
+</div>
 
 <!-- Lightbox -->
 <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
@@ -123,18 +145,15 @@ section.visible { display:block; }
 </div>
 
 <script>
-let galleryData = [
-  {image: 'https://i.imgur.com/pyK8b0X.jpeg'},
-  {image: 'https://i.imgur.com/4SZW6Cf.jpeg'},
-  {image: 'https://i.imgur.com/T1VJc1o.jpeg'}
-];
-let accueilImage = "https://i.imgur.com/pyK8b0X.jpeg";
+let galleryData = [];
+let ADMIN_EMAIL = "admin@example.com";
+let ADMIN_PASSWORD = "12345";
 
 // Section toggle
 function openSection(id){
   document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
-  if(id==='galerie') renderGalleryAdmin();
+  if(id==='galerie') renderGallery();
 }
 
 // Lightbox
@@ -143,46 +162,40 @@ function openLightbox(src){
   document.getElementById('lightbox').style.display='flex';
 }
 
-// Accueil image
+// Accueil image locale
 function loadAccueilImage(event){
   const file = event.target.files[0];
   if(file){
     const reader = new FileReader();
-    reader.onload = e => { 
-      document.getElementById('imgAccueil').src = e.target.result;
-      accueilImage = e.target.result;
-    };
+    reader.onload = e => { document.getElementById('imgAccueil').src = e.target.result; };
     reader.readAsDataURL(file);
   }
 }
+
+// Admin functions
 function saveAccueil(){
-  const val = document.getElementById('editAccueil').value;
-  if(val) document.getElementById('textAccueil').innerText = val;
+  document.getElementById('textAccueil').innerText = document.getElementById('editAccueil').value || '[Histoire du sculpteur malgache, 5 lignes modifiables]';
 }
-
-// À propos
 function saveApropos(){
-  const val = document.getElementById('editApropos').value;
-  if(val) document.getElementById('textApropos').innerText = val;
+  document.getElementById('textApropos').innerText = document.getElementById('editApropos').value || 'Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.';
 }
-
-// Services
 function saveServices(){
   const services = document.getElementById('editServices').value.split("\n").filter(Boolean)
     .map(s=>`<div class="service-card">${s}</div>`).join('');
-  if(services) document.getElementById('listServices').innerHTML = services;
+  document.getElementById('listServices').innerHTML = services;
 }
-
-// Contact
 function saveContact(){
-  const e=document.getElementById('editEmail').value;
-  const t=document.getElementById('editTel').value;
-  const f=document.getElementById('editFB').value;
-  const w=document.getElementById('editWA').value;
-  if(e) document.getElementById('contactEmail').innerText=e;
-  if(t) document.getElementById('contactTel').innerText=t;
-  if(f) document.getElementById('contactFB').innerText=f;
-  if(w) document.getElementById('contactWA').innerText=w;
+  document.getElementById('contactEmail').innerText = document.getElementById('editEmail').value || 'sculpture@example.com';
+  document.getElementById('contactTel').innerText = document.getElementById('editTel').value || '+261 34 00 000 00';
+  document.getElementById('contactFB').innerText = document.getElementById('editFB').value || 'facebook.com/sculpture';
+  document.getElementById('contactWA').innerText = document.getElementById('editWA').value || '+261 34 00 000 00';
+  
+  // Modifier identifiants Admin
+  const newEmail = document.getElementById('newAdminEmail').value;
+  const newPass = document.getElementById('newAdminPass').value;
+  if(newEmail) ADMIN_EMAIL = newEmail;
+  if(newPass) ADMIN_PASSWORD = newPass;
+  alert("Modifications enregistrées !");
 }
 
 // Galerie
@@ -192,6 +205,7 @@ function renderGallery(){
     `<img src="${item.image}" onclick="openLightbox('${item.image}')">`
   ).join('');
 }
+
 function renderGalleryAdmin(){
   const container = document.getElementById('galleryAdmin');
   container.innerHTML = '';
@@ -206,6 +220,7 @@ function renderGalleryAdmin(){
     container.appendChild(div);
   });
 }
+
 function updateGalleryImage(event,index){
   const file = event.target.files[0];
   if(file){
@@ -218,6 +233,7 @@ function updateGalleryImage(event,index){
     reader.readAsDataURL(file);
   }
 }
+
 function deleteGalleryImage(index){
   if(confirm('Voulez-vous supprimer cette image ?')){
     galleryData.splice(index,1);
@@ -225,24 +241,24 @@ function deleteGalleryImage(index){
     renderGalleryAdmin();
   }
 }
-function addGalleryImage(){
-  const fileInput = document.getElementById('addGalleryFile');
-  const file = fileInput.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = e=>{
-      galleryData.push({image:e.target.result});
-      renderGallery();
-      renderGalleryAdmin();
-      fileInput.value='';
-    };
-    reader.readAsDataURL(file);
-  } else alert('Veuillez sélectionner une image.');
+
+// Login Admin
+function loginAdmin(){
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPassword').value;
+  if(email===ADMIN_EMAIL && pass===ADMIN_PASSWORD){
+    document.getElementById('loginAdmin').style.display='none';
+    document.getElementById('adminSections').style.display='block';
+    document.getElementById('loginError').innerText='';
+    alert("Connexion réussie !");
+  } else {
+    document.getElementById('loginError').innerText='Email ou mot de passe incorrect.';
+  }
 }
 
 // Initialisation
 document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('imgAccueil').src = accueilImage;
+  galleryData = [];
   renderGallery();
   renderGalleryAdmin();
 });
